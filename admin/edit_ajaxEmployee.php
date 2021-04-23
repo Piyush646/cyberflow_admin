@@ -2,8 +2,8 @@
 require_once '../lib/core.php';
 
 //editing
-if (isset($_POST['edit']) || isset($_POST['ename']) || isset($_POST['eemail']) || isset($_POST['econtact']) || isset($_POST['epassword'])) {
-    $count= $_POST['count'];
+if (isset($_POST['edit']) || isset($_POST['ename']) || isset($_POST['eemail']) || isset($_POST['econtact']) || isset($_POST['epassword']) && !empty($_POST['epassword'])) {
+    
     $id = $_POST['eid'];
     $name = $_POST['ename'];
     $email = $_POST['eemail'];

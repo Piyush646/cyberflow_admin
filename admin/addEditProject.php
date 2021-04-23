@@ -46,8 +46,15 @@ if (isset($_POST['edit'])) {
     $sql = "update assign_project set name='$name',due_date='$due_date',description='$description' where id='$id'";
     if ($conn->query($sql)) {
         $id = $_GET['token'];
-        if (upload_imagesInsert($conn, "project_files", 'p_id', "img", $id, "projectFile")) {
+        if (upload_imagesInsert($conn, "project_files", 'p_id', 'img', $id, "projectFile")) {
             $query = true;
+        $employees = $_POST['employees'];
+        $sql = "update assigned_employees";
+        foreach ($employees as $emp) {
+            $sql .= "(set e_id='$emp',project_id='$id')";
+        }
+        
+         $sql = rtrim($sql, ",");
         } else {
             $query = false;
         }
@@ -67,6 +74,7 @@ if (isset($_GET['token'])) {
 }
 
 //fetching images
+if (isset($_GET['token'])) {
 $id = $_GET['token'];
 $sql = "select * from project_files where p_id='$id'";
 $res = $conn->query($sql);
@@ -74,6 +82,7 @@ if ($res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $project_img[] = $row;
     }
+}
 }
 
 ?>
@@ -175,7 +184,43 @@ if ($res->num_rows > 0) {
                                     ?>
                                             <div class="col-md-2" id="file<?= $counter ?>">
                                                 <div class="col-md-8">
-                                                    <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="100px" height="100px" /></a>
+                                                    <?php
+                                                $file_parts = pathinfo($file['img']);
+                                                            
+                                                            switch ($file_parts['extension']) {
+                                                                case "jpg":
+                                                    ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                                <?php
+                                                                    break;
+                                                                case "jpeg":
+                                                                ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                                <?php
+                                                                    break;
+                                                                case "png":
+                                                                ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                                <?php
+                                                                    break;
+                                                                case "bmp":
+                                                                ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?> " width="120px" height="120px" /></a>
+                                                                <?php
+                                                                    break;
+                                                                case "JPG":
+                                                                ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?> " width="120px" height="120px" /></a>
+                                                                <?php
+                                                                    break;
+                                                                case "pdf":
+                                                                ?>
+                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/379099.png ?>" width="120px" height="120px" /></a>
+                                                    <?php
+                                                                    break;
+                                                            }
+                                                            ?>
+                                                    <!-- <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a> -->
                                                 </div>
                                                 <div class="col-md-1">
                                                     <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
@@ -272,7 +317,7 @@ if ($res->num_rows > 0) {
             var inhtml = `<div class="row" style="margin-top:20px" >    
                             <div class="col-md-10">
                                 <input   type="file" id='projectfile${counter}' name="projectFile[]" class="form-control"/>
-                            </div> 
+                            </div>
                             <div class="col-md-2">
                                 <button type="button" class="btn btn-danger" onclick="removeField('projectfile${counter}')"><i class="fadeIn animated bx bx-trash"></i></button>
                             </div> 

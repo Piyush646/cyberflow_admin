@@ -5,22 +5,29 @@ require_once 'left_navbar.php';
 
 //inserting
 print_r($_POST);
-if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) && isset($_POST['description'])) {
+if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) && isset($_POST['description']) && isset($_GET['token'])) {
     $title = $_POST['title'];
     $due_date = $_POST['due_date'];
     $description = $_POST['description'];
     $id = $_GET['token'];
-    $sql = "insert into milestones(title,due_date,description,p_id) values ('$title','$due_date','$description','$id'";
+    echo $sql = "insert into milestones(title,due_date,description,p_id) values ('$title','$due_date','$description','$id')";
     if ($conn->query($sql)) {
-    }
-    //     $id=$conn->insert_id;
-    //     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-    //     {
-    //     $query = true;
-    // } else {
-    //     $query=false;
-    // }}
-    else {
+        $id = $conn->insert_id;
+        $id2=$_GET['token'];
+        if (upload_imagesInsert($conn, "milestone_files", "m_id", 'img', $id, "projectFile")) {
+            $query = true;
+        } else {
+            $query = false;
+        }
+        $employees = $_POST['employees'];
+        $sql = "insert into assigned_milestones(e_id,m_id,p_id) values";
+        foreach ($employees as $emp) {
+            $sql .= "('$emp','$id','$id2'),";
+        }
+        
+         $sql = rtrim($sql, ",");
+        $conn->query($sql);
+    } else {
         echo $conn->error;
     }
 }
@@ -34,23 +41,20 @@ if ($res->num_rows > 0) {
         $employee[] = $row;
     }
 }
-print_r($employee);
+
+
 
 //fetching
-if(isset($employee))
-{
-    foreach($employee as $e)
-    {
-        $employeeId=$e['e_id'];
-        $sql="select * from employee where id='$employeeId'";
-        $res= $conn->query($sql);
-        if($res->num_rows>0)
-        {
-            $employeeName[]=$res->fetch_assoc();
+if (isset($employee)) {
+    foreach ($employee as $e) {
+        $employeeId = $e['e_id'];
+        $sql = "select * from employee where id='$employeeId'";
+        $res = $conn->query($sql);
+        if ($res->num_rows > 0) {
+            $employeeName[] = $res->fetch_assoc();
         }
     }
 }
-print_r($employeeName);
 
 if (isset($_GET['token'])) {
     $id = $_GET['token'];
@@ -62,6 +66,29 @@ if (isset($_GET['token'])) {
         }
     }
 }
+
+if (isset($milestones)) {
+    foreach ($milestones as $m) {
+        $m_id = $m['id'];
+$sql2 = "select * from milestone_files where m_id='$m_id'";
+$res2 = $conn->query($sql2);
+if ($res2->num_rows > 0) {
+    while ($row2 = $res2->fetch_assoc()) {
+        $m_files[] = $row2;
+    }
+
+    $sql3 = "select * from assigned_milestones where m_id='$m_id'";
+    $res3 = $conn->query($sql3);
+    if ($res3->num_rows > 0) {
+        while ($row3 = $res3->fetch_assoc()) {
+            $assigned_milestones[] = $row3;
+        }
+    }
+}
+
+    }
+}
+
 
 
 ?>
@@ -97,16 +124,18 @@ if (isset($_GET['token'])) {
                             <table class="table table-striped table-bordered mb-0" id="table1">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col">#</th>
+                                        <!-- <th scope="col">#</th> -->
                                         <th scope="col">Title</th>
+                                        <th scope="col">Files</th>
                                         <th scope="col">Due Date</th>
 
 
                                         <th scope="col">Description</th>
                                         <th scope="col">Assigned To</th>
+                                        <th scope="col">Actions</th>
                                         <th scope="col">Excuses</th>
                                         <th scope="col">Comments</th>
-                                        <th scope="col">Actions</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,26 +143,150 @@ if (isset($_GET['token'])) {
                                     if (isset($milestones)) {
                                         $i = 1;
                                         foreach ($milestones as $m) {
+                                            $timestamp = strtotime($m['due_date']);
                                     ?>
                                             <tr id="tr<?= $i ?>">
-                                                <th scope="row"><?= $i ?></th>
+                                                <!-- <th scope="row"><?= $i ?></th> -->
                                                 <td id="name<?= $i ?>"><?= $m['title'] ?></td>
-                                                <td id="contact<?= $i ?>"><?= $m['due_date'] ?></td>
+                                                <td>
+                                                    <?php
+                                                    if (isset($m_files)) {
+                                                        foreach ($m_files as $p) {
+
+                                                            if ($p['m_id'] == $m['id']) {
+                                                                $file_parts = pathinfo($p['img']);
+
+                                                                switch ($file_parts['extension']) {
+                                                                    case "jpg":
+                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "jpeg":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "png":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "bmp":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "JPG":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "pdf":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/379099.png ?>" width="33px" height="33px" /></a>
+                                                    <?php
+                                                                        break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+
+                                                    ?>
+                                                </td>
+                                                
+                                                <td id="contact<?= $i ?>"><?=date("M-d-Y", $timestamp) ?></td>
 
                                                 <td id="email<?= $i ?>"><?= $m['description'] ?></td>
-                                                <td id="email<?= $i ?>"><?= $m[''] ?></td>
-                                                <td id="password<?= $i ?>"><?= $m['excuses'] ?></td>
-                                                <td id="password<?= $i ?>"><?= $m['comments'] ?></td>
+                                                <td>
+                                                    <?php 
+                                                    if(isset($assigned_milestones))
+                                                    {
+                                                        foreach($assigned_milestones as $a)
+                                                        {
+                                                            if($m['id']==$a['m_id'])
+                                                            {
+                                                                $eid=$a['e_id'];
+                                                                $sql="select * from employee where id='$eid'";
+                                                                $res= $conn->query($sql);
+                                                                if($res->num_rows > 0)
+                                                                {
+                                                                    $ename=$res->fetch_assoc();
+                                                                }
+                                                                ?>
+                                                                
+                                                                <p style="display:inline"><?=$ename['name']?>,<br></p>
+                                                                <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+                                                </td>
                                                 <form method="post">
                                                     <td><a type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</a>
-                                                        <button type="button" class="btn btn-danger m-1 px-2" onclick="deleteEmp(<?= $m['id'] ?>,'tr<?= $i ?>')">Delete</button>
+                                                        <button type="button" class="btn btn-danger m-1 px-2" onclick="deleteMilestone(<?= $m['id'] ?>,'tr<?= $i ?>')">Delete</button>
                                                     </td>
                                                 </form>
+                                                <td>
+                                                    <?php 
+                                                    if(isset($assigned_milestones))
+                                                    {
+                                                        foreach($assigned_milestones as $a)
+                                                        {
+                                                            if($m['id']==$a['m_id'])
+                                                            {
+                                                                $eid=$a['e_id'];
+                                                                $sql="select * from employee where id='$eid'";
+                                                                $res= $conn->query($sql);
+                                                                if($res->num_rows > 0)
+                                                                {
+                                                                    $ename=$res->fetch_assoc();
+                                                                }
+                                                                if(!empty($a['excuse']))
+                                                                {
+                                                                ?>
+                                                                <p><?=$ename['name']?> : <?=$a['excuse']?><br></p>
+                                                                <?php
+                                                                }
+                                                            }
+                                                        }
+                                                    
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php 
+                                                    if(isset($assigned_milestones))
+                                                    {
+                                                        foreach($assigned_milestones as $a)
+                                                        {
+                                                            if($m['id']==$a['m_id'])
+                                                            {
+                                                                $eid=$a['e_id'];
+                                                                $sql="select * from employee where id='$eid'";
+                                                                $res= $conn->query($sql);
+                                                                if($res->num_rows > 0)
+                                                                {
+                                                                    $ename=$res->fetch_assoc();
+                                                                }
+                                                                if(!empty($a['comments']))
+                                                                {
+                                                                ?>
+                                                                <p><?=$ename['name']?> : <?=$a['comments']?><br></p>
+                                                                <?php
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+                                                </td>
+                                                
                                             </tr>
                                     <?php
                                             $i++;
                                         }
                                     }
+                                }
                                     ?>
                                 </tbody>
                             </table>
@@ -146,7 +299,7 @@ if (isset($_GET['token'])) {
 </div>
 <!--end page-content-wrapper-->
 <!-- Modal -->
-<form class="needs-validation" method="post">
+<form method="post" enctype="multipart/form-data" >
     <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -166,14 +319,13 @@ if (isset($_GET['token'])) {
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="validationCustom02">Due Date</label>
-                                    <input type="date" class="form-control" id="validationCustom" name="contact" required>
+                                    <input type="date" class="form-control" id="validationCustom" name="due_date" required>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 mb-3">
                                     <label for="validationCustom03">Description</label>
-
                                     <textarea type="text" class="form-control" id="validationCusto" name="description" required></textarea>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
@@ -214,11 +366,11 @@ if (isset($_GET['token'])) {
                                         <label for="validationCustom01">
                                             Assign To:
                                         </label>
-                                        <!-- <input type="link" class="form-control" id="validationCustom01" name="fb" value="<?= $config['facebook'] ?>" required> -->
+                                       
                                         <select id="prim_skills" name="employees[]" multiple>
                                             <?php
-                                            if ( isset($employee)) {
-                                                foreach ( $employeeName as $e) {
+                                            if (isset($employeeName)) {
+                                                foreach ($employeeName as $e) {
                                             ?>
 
                                                     <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option>
@@ -242,12 +394,14 @@ if (isset($_GET['token'])) {
                     <div class="modal-footer">
 
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" name="add">Add</button>
+                        <button type="submit"  class="btn btn-primary" name="add">Add</button>
+                                        
 
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </form>
 
 <!--edit modal-->
@@ -256,7 +410,7 @@ if (isset($_GET['token'])) {
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Member</h5>
+                    <h5 class="modal-title">Edit Milestone</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -362,13 +516,13 @@ require_once 'footer.php';
 
     }
 
-    function deleteFile(id, divId, path) {
+    function deleteFile(id, divId) {
         $.ajax({
-            url: "files_ajax.php",
+            url: "del_ajaxMilestone.php",
             type: "POST",
             data: {
-                deleteFile: id,
-                delpath: path
+                deleteId: id,
+                
             },
             success: function(data) {
 
@@ -416,12 +570,12 @@ require_once 'footer.php';
         })
     }
 
-    function deleteEmp(id, trId) {
+    function deleteMilestone(id, trId) {
         $.ajax({
-            url: "delete_ajaxEmployee.php",
+            url: "del_ajaxMilestone.php",
             type: "POST",
             data: {
-                deleteEmp: id,
+                deleteId: id,
 
             },
             success: function(data) {

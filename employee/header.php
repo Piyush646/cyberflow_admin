@@ -31,22 +31,22 @@ if($res->num_rows > 0)
 	<!--favicon-->
 	<link rel="icon" href="<?=$config['logo']?>"></link>
 	<!--plugins-->
-	<link href="assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
-	<link href="assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
-	<link href="assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
+	<link href="../admin/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+	<link href="../admin/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+	<link href="../admin/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
 	<!-- loader-->
-	<link href="assets/css/pace.min.css" rel="stylesheet" />
-	<script src="assets/js/pace.min.js"></script>
+	<link href="../admin/assets/css/pace.min.css" rel="stylesheet" />
+	<script src="../admin/assets/js/pace.min.js"></script>
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
-	<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../admin/assets/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&amp;family=Roboto&amp;display=swap" />
 	<!-- Icons CSS -->
-	<link rel="stylesheet" href="assets/css/icons.css" />
+	<link rel="stylesheet" href="../admin/assets/css/icons.css" />
 	<!-- App CSS -->
-	<link rel="stylesheet" href="assets/css/app.css" />
-	<link rel="stylesheet" href="assets/css/dark-sidebar.css" />
-	<link rel="stylesheet" href="assets/css/dark-theme.css" />
+	<link rel="stylesheet" href="../admin/assets/css/app.css" />
+	<link rel="stylesheet" href="../admin/assets/css/dark-sidebar.css" />
+	<link rel="stylesheet" href="../admin/assets/css/dark-theme.css" />
 	<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 </head>
 <body>

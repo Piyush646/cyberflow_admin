@@ -157,7 +157,7 @@ if($res->num_rows > 0)
 							<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-toggle="dropdown">
 								<div class="media user-box align-items-center">
 									<div class="media-body user-info">
-										<p class="user-name mb-0"><?=$_SESSION['admin_signed_in']?></p>
+										<p class="user-name mb-0"><?=$_SESSION['employee_signed_in']?></p>
 										<p class="designattion mb-0">Available</p>
 									</div>
 									<img src="<?=$config['logo']?>" class="user-img" alt="user avatar">

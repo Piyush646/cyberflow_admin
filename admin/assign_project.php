@@ -57,7 +57,7 @@ if (isset($_POST['del'])) {
 //     if ($conn->query($sql)) {
 //         $sql = "insert into employee(password) values ('$name','$email','$contact',MD5('$password'))";
 //     }
-        
+
 //         else {
 //         echo $conn->error;
 //     }
@@ -74,6 +74,32 @@ if ($res->num_rows > 0) {
         $project[] = $row;
     }
 }
+
+if (isset($project)) {
+    foreach ($project as $p) {
+        $p_id = $p['id'];
+$sql2 = "select * from project_files where p_id='$p_id'";
+$res2 = $conn->query($sql2);
+if ($res2->num_rows > 0) {
+    while ($row2 = $res2->fetch_assoc()) {
+        $p_files[] = $row2;
+    }
+
+    $sql3 = "select * from assigned_employees where project_id='$p_id'";
+    $res3 = $conn->query($sql3);
+    if ($res3->num_rows > 0) {
+        while ($row3 = $res3->fetch_assoc()) {
+            $assigned_emp[] = $row3;
+        }
+    }
+}
+
+    }
+}
+// print_r($assigned_emp);
+
+
+
 
 ?>
 
@@ -96,7 +122,7 @@ if ($res->num_rows > 0) {
                 </div>
                 <div class="ml-auto">
                     <div class="btn-group">
-                        <a  href="addEditProject.php" type="button" class="btn btn-primary m-1" ><i class=" fadeIn animated bx bx-plus"></i></a>
+                        <a href="addEditProject.php" type="button" class="btn btn-primary m-1"><i class=" fadeIn animated bx bx-plus"></i></a>
                     </div>
                 </div>
             </div>
@@ -112,9 +138,9 @@ if ($res->num_rows > 0) {
                                         <th scope="col">Name</th>
                                         <th scope="col">Description</th>
 
-                                        
+
                                         <th scope="col">Due Date</th>
-                                        <th scope="col">Images</th>
+                                        <th scope="col">Files</th>
                                         <th scope="col">Assigned To</th>
                                         <th scope="col">Actions</th>
                                     </tr>
@@ -124,20 +150,91 @@ if ($res->num_rows > 0) {
                                     if (isset($project)) {
                                         $i = 1;
                                         foreach ($project as $t) {
-                                            $timestamp = strtotime($t['time_stamp']);
+                                            $timestamp = strtotime($t['due_date']);
                                     ?>
-                                            <tr>
+                                            <tr id="tr<?= $i ?>">
                                                 <th scope="row"><?= $i ?></th>
                                                 <td id="name<?= $i ?>"><?= $t['name'] ?></td>
                                                 <td id="contact<?= $i ?>"><?= $t['description'] ?></td>
-                                                
+
                                                 <td id="email<?= $i ?>"><?= date("M-d-Y", $timestamp) ?></td>
-                                                <td id="email<?= $i ?>"><?= $t['due_date'] ?></td>
-                                                <td id="password<?= $i ?>"><?=$t['']?></td>
+
+                                                <td>
+                                                    <?php
+                                                    if (isset($p_files)) {
+                                                        foreach ($p_files as $p) {
+
+                                                            if ($p['p_id'] == $t['id']) {
+                                                                $file_parts = pathinfo($p['img']);
+
+                                                                switch ($file_parts['extension']) {
+                                                                    case "jpg":
+                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "jpeg":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "png":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "bmp":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "JPG":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                    <?php
+                                                                        break;
+                                                                    case "pdf":
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/379099.png ?>" width="33px" height="33px" /></a>
+                                                    <?php
+                                                                        break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+
+                                                    ?>
+                                                </td>
+                                                
+                                                <td>
+                                                    <?php 
+                                                    if(isset($assigned_emp))
+                                                    {
+                                                        foreach($assigned_emp as $a)
+                                                        {
+                                                            if($t['id']==$a['project_id'])
+                                                            {
+                                                                $eid=$a['e_id'];
+                                                                $sql="select * from employee where id='$eid'";
+                                                                $res= $conn->query($sql);
+                                                                if($res->num_rows > 0)
+                                                                {
+                                                                    $ename=$res->fetch_assoc();
+                                                                }
+                                                                ?>
+                                                                
+                                                                <p style="display:inline"><?=$ename['name']?> ,<br></p>
+                                                                <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+                                                </td>
                                                 <form method="post">
-                                                    <td><a href="addEditProject.php?token=<?=$t['id']?>" class="btn btn-success m-1 px-3">Edit</a>
-                                                        <button type="submit" class="btn btn-danger m-1 px-3" value="<?= $t['id'] ?>" name="del">Delete</button>
-                                                        <a href="milestone.php?token=<?=$t['id']?>" class="btn btn-info m-1 px-3">Milestones</a>
+                                                    <td><a href="addEditProject.php?token=<?= $t['id'] ?>" class="btn btn-success m-1 px-3">Edit</a>
+                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteProject('<?=$t['id']?>','tr<?=$i?>')">Delete</button>
+                                                        <a href="milestone.php?token=<?= $t['id'] ?>" class="btn btn-info m-1 px-3">Milestones</a>
                                                     </td>
                                                 </form>
                                             </tr>
@@ -212,8 +309,8 @@ if ($res->num_rows > 0) {
     </div>
 </form>
 
-    <!--edit modal-->
-    <form method="post" enctype="multipart/form-data">
+   edit modal-->
+<form method="post" enctype="multipart/form-data">
     <div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -277,20 +374,38 @@ if ($res->num_rows > 0) {
             </div>
         </div>
     </div>
-</form> -->
+</form>
 <?php
 require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
-<!-- <script>
-    $('#fancy-file-upload').FancyFileUpload({
-        params: {
-            action: 'fileuploader'
-        },
-        maxfilesize: 1000000
-    });
-</script> -->
+ <script>
+    
+
+function deleteProject(id, trId) {
+        $.ajax({
+            url: "delete_ajaxProject.php",
+            type: "POST",
+            data: {
+                deleteId: id,
+
+            },
+            success: function(data) {
+
+                if (data.trim() == "ok") {
+                    $("#" + trId).remove();
 
 
+
+                } else {
+                    console.log(data);
+                }
+            },
+            error: function() {
+
+            }
+
+        })
+    }
 </script>

@@ -5,34 +5,39 @@ require_once 'left_navbar.php';
 
 //inserting
 print_r($_POST);
-if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
+if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) 
+{
     $name = $_POST['name'];
     $email = $_POST['email'];
     $contact = $_POST['contact'];
     $password = $_POST['password'];
     $sql = "insert into employee(name,email,contact,password) values ('$name','$email','$contact',MD5('$password'))";
     if ($conn->query($sql)) {
+    
+        $id=$conn->insert_id;
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $sql = "insert into admin(email,e_id,password,status) values ('$email','$id',MD5('$password'),1)";
+        if ($conn->query($sql)) {
+        }
+        else {
+            echo $conn->error;
+        }
     }
-    //     $id=$conn->insert_id;
-    //     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-    //     {
-    //     $query = true;
-    // } else {
-    //     $query=false;
-    // }}
+    
     else {
         echo $conn->error;
     }
 }
 
-if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $contact = $_POST['contact'];
-    $password = $_POST['password'];
-    $sql = "insert into admin(email,password,status) values ('$email',MD5('$password'),1)";
-    if ($conn->query($sql)) {
-    }
+// if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
+    
+//     $email = $_POST['email'];
+   
+//     $password = $_POST['password'];
+//     $sql = "insert into admin(email,password,status) values ('$email',MD5('$password'),1)";
+//     if ($conn->query($sql)) {
+//     }
     //     $id=$conn->insert_id;
     //     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
     //     {
@@ -40,10 +45,10 @@ if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && i
     // } else {
     //     $query=false;
     // }}
-    else {
-        echo $conn->error;
-    }
-}
+//     else {
+//         echo $conn->error;
+//     }
+// }
 
 
 
@@ -284,7 +289,7 @@ console.log(counter);
         $("#validationCustom01").val($("#name" + count).html());
         $("#validationCustom02").val($("#contact" + count).html());
         $("#validationCustom03").val($("#email" + count).html());
-        // $("#validationCustom04").val($("#password" + count).html());
+        $("#validationCustom04").val("");
         counter = count;
     }
 
@@ -300,7 +305,8 @@ console.log(counter);
                         $("#name"+ counter).html($("#validationCustom01").val());
                         $("#contact"+ counter).html($("#validationCustom02").val());
                         $("#email"+ counter).html($("#validationCustom03").val());
-                        $("#password"+ counter).html($("#validationCustom04").val());
+
+                        // $("#password"+ counter).html($("#validationCustom04").val());
                         
                     }
                 } else {

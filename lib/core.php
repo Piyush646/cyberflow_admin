@@ -5,10 +5,11 @@ require_once 'config.php';
 //login admin
 function login($email,$password,$conn)
 {
-    $sql="select id from admin where email='$email' and password='$password' and status= 0";
+    echo $sql="select id from admin where email='$email' and password='$password' and status= 0";
     $res=$conn->query($sql);
     if($res->num_rows>0)
     {
+        echo "admin done";
         $row=$res->fetch_assoc();
         $id=$row['id'];
         header("location: dashboard.php");
@@ -17,6 +18,7 @@ function login($email,$password,$conn)
     }
     else
     {
+        echo "admin not done";
         return false;
     }
 }
@@ -30,9 +32,11 @@ function login_employee($email,$password,$conn)
     {
         $row=$res->fetch_assoc();
         $id=$row['id'];
-        header("location: dashboard.php");
+        $eid=$row['e_id'];
+        header("location: ../employee/projects.php");
         $_SESSION['employee_signed_in']=$email;
         $_SESSION['id']=$id;
+        $_SESSION['e_id']=$eid;
     }
     else
     {
@@ -133,7 +137,7 @@ function upload_imageUpdate($conn,$table,$column,$id_columnka_naam,$id,$image)
             }
         }
         else
-        {
+        { 
             $uploadedFile="err";
             return $uploadedFile;
         }
@@ -153,7 +157,7 @@ function upload_imagesInsert($conn,$table,$id_col,$column,$id,$images)
     // print_r($_FILES);
 	if(isset($_FILES[$images]))
     {
-        $extension=array("jpeg","jpg","png","gif","pdf","PDF");
+        $extension=array("jpeg","jpg","png","gif","pdf","PDF","JPG");
         foreach($_FILES[$images]["tmp_name"] as $key=>$tmp_name) 
         {
             $file_name=$_FILES[$images]["name"][$key];

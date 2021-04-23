@@ -28,70 +28,21 @@ if ($res->num_rows > 0) {
             </a>
         </li>
         <li>
-            <a href="team.php">
+            <a href="projects.php">
                 <div class="parent-icon icon-color-4"><i class="fadeIn animated bx bx-group"></i>
                 </div>
-                <div class="menu-title">Team</div>
+                <div class="menu-title">Projects</div>
             </a>
         </li>
+        
         <li>
-            <a href="#" class="has-arrow">
-                <div class="parent-icon icon-color-2"> <i class="fadeIn animated bx bx-cookie"></i>
-                </div>
-                <div class="menu-title">Management</div>
-            </a>
-            <ul>
-                <li> <a href="employee.php"><i class="bx bx-right-arrow-alt"></i>Employee</a>
-                </li>
-                <li> <a href="assign_project.php"><i class="bx bx-right-arrow-alt"></i>Assign Project</a>
-                </li>
-            </ul>
-
-        </li>
-        <li>
-            <a href="testimonials.php">
+            <a href="summary.php">
                 <div class="parent-icon icon-color-3"> <i class="fadeIn animated bx bx-clipboard"></i>
                 </div>
-                <div class="menu-title">Testimonials</div>
+                <div class="menu-title">Summary</div>
             </a>
         </li>
-        <li>
-            <a href="web_config.php">
-                <div class="parent-icon icon-color-2"><i class="fadeIn animated bx bx-highlight"></i>
-                </div>
-                <div class="menu-title">Web Configuration</div>
-            </a>
-        </li>
-        <li>
-            <a href="about.php">
-                <div class="parent-icon icon-color-3"> <i class="fadeIn animated bx bx-list-ul"></i>
-                </div>
-                <div class="menu-title">About</div>
-            </a>
-        </li>
-        <li>
-            <a href="portfolio.php">
-                <div class="parent-icon icon-color-4"><i class="fadeIn animated bx bx-folder-plus"></i>
-                </div>
-                <div class="menu-title">Portfolio</div>
-            </a>
-        </li>
-
-        <li>
-            <a href="recruitment.php">
-                <div class="parent-icon icon-color-3"><i class="fadeIn animated bx bx-cart"></i>
-                </div>
-                <div class="menu-title">Recruitment</div>
-            </a>
-        </li>
-
-        <li>
-            <a href="getInTouch.php">
-                <div class="parent-icon icon-color-2"><i class="fadeIn animated bx bx-notification"></i>
-                </div>
-                <div class="menu-title">Get In Touch</div>
-            </a>
-        </li>
+        
 
     </ul>
 </div>

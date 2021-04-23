@@ -4,10 +4,21 @@ include_once '../lib/core.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (isset($_POST['login'])) {
-     echo $email = $conn->real_escape_string(strtolower(trim(test_input($_POST['email']))));
-     echo$password = md5($_POST['password']);
-    
+      $email = $conn->real_escape_string(strtolower(trim(test_input($_POST['email']))));
+      // $password = md5($_POST['password']); 
+       $password = ($_POST['password']); 
     if (!login($email, $password, $conn)) {
+      $error = "invalid user & Password";
+    } else {
+    }
+  }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (isset($_POST['login'])) {
+    $email = $conn->real_escape_string(strtolower(trim(test_input($_POST['email']))));
+    $password = md5($_POST['password']);
+    if (!login_employee($email, $password, $conn)) {
       $error = "invalid user & Password";
     } else {
     }
@@ -29,8 +40,8 @@ if ($res->num_rows > 0) {
 <!--favicon-->
 <link rel="icon" href="<?= $config['logo'] ?>" type="image/png">
 <!-- loader-->
-<link href="css/pace.min.css" rel="stylesheet">
-<script src="js/pace.min.js"></script>
+<link href="assets/css/pace.min.css" rel="stylesheet">
+<script src="assets/js/pace.min.js"></script>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&amp;family=Roboto&amp;display=swap">
@@ -759,8 +770,7 @@ if ($res->num_rows > 0) {
                 <form method="post">
                   <div class="form-group mt-4">
                     <label>Email Address</label>
-                    <input type="text" style="focus{
-    box-shadow: #1fcecb;}" name="email" id="email" class="form-control" placeholder="Enter your email address">
+                    <input type="text" name="email" id="email" class="form-control" placeholder="Enter your email address">
                   </div>
                   <div class="form-group">
                     <label>Password</label>
@@ -807,8 +817,8 @@ if ($res->num_rows > 0) {
   <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
   <script src="bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
   <!-- jvectormap  -->
-  <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-  <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="assets/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+  <script src="assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
   <!-- SlimScroll -->
   <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
@@ -821,20 +831,20 @@ if ($res->num_rows > 0) {
   <script src="assets/js/popper.min.js"></script>
   <script src="assets/js/bootstrap.min.js"></script>
   <!--plugins-->
-  <script src="plugins/simplebar/js/simplebar.min.js"></script>
-  <script src="plugins/metismenu/js/metisMenu.min.js"></script>
-  <script src="plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+  <script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
+  <script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
+  <script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
   <!-- App JS -->
-  <script src="js/app.js"></script>
+  <script src="assets/js/app.js"></script>
 
-  <script src="plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-  <script src="plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-  <script src="plugins/vectormap/jquery-jvectormap-in-mill.js"></script>
-  <script src="plugins/vectormap/jquery-jvectormap-us-aea-en.js"></script>
-  <script src="plugins/vectormap/jquery-jvectormap-uk-mill-en.js"></script>
-  <script src="plugins/vectormap/jquery-jvectormap-au-mill.js"></script>
-  <script src="plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
-  <script src="js/index.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-in-mill.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-us-aea-en.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-uk-mill-en.js"></script>
+  <script src="assets/plugins/vectormap/jquery-jvectormap-au-mill.js"></script>
+  <script src="assets/plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
+  <script src="assets/js/index.js"></script>
   <!-- App JS -->
   <script>
     new PerfectScrollbar('.dashboard-social-list');
