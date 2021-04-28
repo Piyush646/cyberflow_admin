@@ -84,7 +84,7 @@ if ($res2->num_rows > 0) {
     while ($row2 = $res2->fetch_assoc()) {
         $p_files[] = $row2;
     }
-
+}
     $sql3 = "select * from assigned_employees where project_id='$p_id'";
     $res3 = $conn->query($sql3);
     if ($res3->num_rows > 0) {
@@ -92,7 +92,7 @@ if ($res2->num_rows > 0) {
             $assigned_emp[] = $row3;
         }
     }
-}
+
 
     }
 }

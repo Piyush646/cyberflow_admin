@@ -26,12 +26,12 @@ if (isset($_POST['add'])) {
             $query = false;
         }
         $employees = $_POST['employees'];
-        $sql = "insert into assigned_employees(e_id,project_id) values";
+        echo $sql = "insert into assigned_employees(e_id,project_id) values";
         foreach ($employees as $emp) {
             $sql .= "('$emp','$id'),";
         }
-        
-         $sql = rtrim($sql, ",");
+
+        $sql = rtrim($sql, ",");
         $conn->query($sql);
     } else {
         echo $conn->error;
@@ -48,20 +48,30 @@ if (isset($_POST['edit'])) {
         $id = $_GET['token'];
         if (upload_imagesInsert($conn, "project_files", 'p_id', 'img', $id, "projectFile")) {
             $query = true;
-        $employees = $_POST['employees'];
-        $sql = "update assigned_employees";
-        foreach ($employees as $emp) {
-            $sql .= "(set e_id='$emp',project_id='$id')";
-        }
-        
-         $sql = rtrim($sql, ",");
         } else {
             $query = false;
         }
-    } else {
-        echo $conn->error;
+        
+
+        echo $sql = "delete from assigned_employees where project_id='$id'";
+        if ($conn->query($sql)) {
+            echo $sql = "insert into assigned_employees(e_id,project_id) values";
+            $employees = $_POST['employees'];
+            foreach ($employees as $emp) {
+                $sql .= "('$emp','$id'),";
+            }
+            $sql = rtrim($sql, ",");
+            $conn->query($sql);
+        }
+        
+        //  else {
+        //     $query2 = false;
     }
 }
+// } else {
+//     echo $conn->error;
+// }
+
 
 //fetching
 if (isset($_GET['token'])) {
@@ -75,14 +85,14 @@ if (isset($_GET['token'])) {
 
 //fetching images
 if (isset($_GET['token'])) {
-$id = $_GET['token'];
-$sql = "select * from project_files where p_id='$id'";
-$res = $conn->query($sql);
-if ($res->num_rows > 0) {
-    while ($row = $res->fetch_assoc()) {
-        $project_img[] = $row;
+    $id = $_GET['token'];
+    $sql = "select * from project_files where p_id='$id'";
+    $res = $conn->query($sql);
+    if ($res->num_rows > 0) {
+        while ($row = $res->fetch_assoc()) {
+            $project_img[] = $row;
+        }
     }
-}
 }
 
 ?>
@@ -123,7 +133,7 @@ if ($res->num_rows > 0) {
             </div>
             <div class="card">
                 <div class="card-body">
-                    <form  method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data">
                         <div class="card radius-15">
                             <div class="card-body">
                                 <div class="form-row">
@@ -159,11 +169,11 @@ if ($res->num_rows > 0) {
                                     <?php
                                     if (isset($project)) {
                                     ?>
-                                        <h4 style="display:inline; margin-right:4px;" class="mb-0">Edit Images</h4>
+                                        <h4 style="display:inline; margin-right:4px;" class="mb-0">Edit Files</h4>
                                     <?php
                                     } else {
                                     ?>
-                                        <h4 style="display:inline; margin-right:4px;" class="mb-0">Add Images</h4>
+                                        <h4 style="display:inline; margin-right:4px;" class="mb-0">Add Files</h4>
                                     <?php
                                     }
                                     ?>
@@ -184,43 +194,7 @@ if ($res->num_rows > 0) {
                                     ?>
                                             <div class="col-md-2" id="file<?= $counter ?>">
                                                 <div class="col-md-8">
-                                                    <?php
-                                                $file_parts = pathinfo($file['img']);
-                                                            
-                                                            switch ($file_parts['extension']) {
-                                                                case "jpg":
-                                                    ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                                <?php
-                                                                    break;
-                                                                case "jpeg":
-                                                                ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                                <?php
-                                                                    break;
-                                                                case "png":
-                                                                ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                                <?php
-                                                                    break;
-                                                                case "bmp":
-                                                                ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?> " width="120px" height="120px" /></a>
-                                                                <?php
-                                                                    break;
-                                                                case "JPG":
-                                                                ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?> " width="120px" height="120px" /></a>
-                                                                <?php
-                                                                    break;
-                                                                case "pdf":
-                                                                ?>
-                                                                    <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/379099.png ?>" width="120px" height="120px" /></a>
-                                                    <?php
-                                                                    break;
-                                                            }
-                                                            ?>
-                                                    <!-- <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a> -->
+                                                    <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
@@ -254,15 +228,15 @@ if ($res->num_rows > 0) {
                                         <label for="validationCustom01">
                                             Assign To:
                                         </label>
-                                        <!-- <input type="link" class="form-control" id="validationCustom01" name="fb" value="<?= $config['facebook'] ?>" required> -->
+
                                         <select id="prim_skills" name="employees[]" multiple>
                                             <?php
                                             if (isset($employee)) {
                                                 foreach ($employee as $e) {
                                             ?>
 
-                                                    <option value="<?=$e['id']?>"><?= $e['name'] ?></option>
-                                                    
+                                                    <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option>
+
                                             <?php
                                                 }
                                             }

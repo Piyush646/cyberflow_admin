@@ -118,7 +118,7 @@ if ($res->num_rows > 0) {
                                         $i = 1;
                                         foreach ($testimonials as $t) {
                                     ?>
-                                            <tr>
+                                            <tr id="tr<?= $i ?>">
                                                 <th scope="row"><?= $i ?></th>
                                                 <td id="name<?= $i ?>"><?= $t['name'] ?></td>
                                                 <td id="position<?= $i ?>"><?= $t['position'] ?></td>
@@ -128,7 +128,7 @@ if ($res->num_rows > 0) {
                                                 <td id="des<?= $i ?>"><?= $t['des'] ?></td>
                                                 <form method="post">
                                                     <td><button type="button" class="btn btn-success m-1 px-3" value="<?= $t['id'] ?>" onclick="editSetValues(<?= $t['id'] ?>,<?= $i ?>)" data-toggle="modal" data-target="#exampleModal6">Edit</button>
-                                                        <button type="submit" class="btn btn-danger m-1 px-3" value="<?= $t['id'] ?>" name="del">Delete</button>
+                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteTestimonial(<?=$t['id']?>,'tr<?=$i?>')" name="del">Delete</button>
                                                     </td>
                                                 </form>
                                             </tr>
@@ -251,7 +251,7 @@ if ($res->num_rows > 0) {
 </form>
 
 <!--edit modal-->
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="editM">
     <div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -304,7 +304,7 @@ if ($res->num_rows > 0) {
                                 <h4 class="mb-0">Image Upload</h4>
                             </div>
                             <hr />
-                            <input id="fancy-file-upload2" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png" multiple><br>
+                            <input id="fancy-file-upload2" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png" ><br>
                         </div>
                     </div>
 
@@ -314,7 +314,7 @@ if ($res->num_rows > 0) {
                 <div class="modal-footer">
 
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="edit">Save changes</button>
+                    <button type="button" onclick="editValues()" data-dismiss="modal" class="btn btn-primary" name="edit">Save changes</button>
 
                 </div>
             </div>
@@ -336,13 +336,70 @@ require_once 'footer.php';
 </script> -->
 
 <script>
+    var counter=0;
     function editSetValues(id, count) {
         $("#eid").val(id);
         $("#validationCustom01").val($("#name" + count).html());
         $("#validationCustom02").val($("#position" + count).html());
         $("#validationCustom03").val($("#sort_order" + count).html());
         $('#edesc').val(CKEDITOR.instances['edesc'].setData($("#des" + count).html()));
+        counter=count;
+    }
 
+
+
+    function editValues() {
+        $.ajax({
+            url: "testimonialEdit_ajax.php",
+            type: "POST",
+            data: $("#editM").serialize(),
+            success: function(data) {
+
+                if (data.trim() == "ok") {
+                    {
+                        $("#name"+ counter).html($("#validationCustom01").val());
+                        $("#position"+ counter).html($("#validationCustom02").val());
+                        $("#sort_order"+ counter).html($("#validationCustom03").val());
+                        // $("#des"+ counter).html($("#edesc").val());
+                        
+                    }
+                } else {
+                    console.log(data);
+                }
+            },
+            error: function() {
+
+            }
+
+        })
+    }
+
+
+
+    function deleteTestimonial(id, trId) {
+        $.ajax({
+            url: "testimonialdelete_ajaxMember.php",
+            type: "POST",
+            data: {
+                deleteTestimonial: id,
+
+            },
+            success: function(data) {
+
+                if (data.trim() == "ok") {
+                    $("#" + trId).remove();
+
+
+
+                } else {
+                    console.log(data);
+                }
+            },
+            error: function() {
+
+            }
+
+        })
     }
 
     

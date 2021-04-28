@@ -50,6 +50,13 @@ if ($res->num_rows > 0) {
 <!-- App CSS -->
 <link rel="stylesheet" href="assets/css/app.css">
 <style>
+ .form-control:focus{
+  border-color:#1fcecb;
+  box-shadow:0 0 0 0.05rem #1fcecb;
+}
+  </style>
+<style>
+  
   .btn-secondary,
   .btn-secondary:hover {
     background-color: #343a40;
@@ -770,7 +777,7 @@ if ($res->num_rows > 0) {
                 <form method="post">
                   <div class="form-group mt-4">
                     <label>Email Address</label>
-                    <input type="text" name="email" id="email" class="form-control" placeholder="Enter your email address">
+                    <input type="email" name="email" id="email" class="form-control emil" placeholder="Enter your email address">
                   </div>
                   <div class="form-group">
                     <label>Password</label>

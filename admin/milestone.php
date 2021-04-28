@@ -147,8 +147,8 @@ if ($res2->num_rows > 0) {
                                     ?>
                                             <tr id="tr<?= $i ?>">
                                                 <!-- <th scope="row"><?= $i ?></th> -->
-                                                <td id="name<?= $i ?>"><?= $m['title'] ?></td>
-                                                <td>
+                                                <td id="title<?= $i ?>"><?= $m['title'] ?></td>
+                                                <td class="filess<?=$i?>">
                                                     <?php
                                                     if (isset($m_files)) {
                                                         foreach ($m_files as $p) {
@@ -196,9 +196,9 @@ if ($res2->num_rows > 0) {
                                                     ?>
                                                 </td>
                                                 
-                                                <td id="contact<?= $i ?>"><?=date("M-d-Y", $timestamp) ?></td>
+                                                <td id="due_date<?= $i ?>"><?=date("M-d-Y", $timestamp) ?></td>
 
-                                                <td id="email<?= $i ?>"><?= $m['description'] ?></td>
+                                                <td id="description<?= $i ?>"><?= $m['description'] ?></td>
                                                 <td>
                                                     <?php 
                                                     if(isset($assigned_milestones))
@@ -224,7 +224,7 @@ if ($res2->num_rows > 0) {
                                                     ?>
                                                 </td>
                                                 <form method="post">
-                                                    <td><a type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</a>
+                                                    <td><button type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</button>
                                                         <button type="button" class="btn btn-danger m-1 px-2" onclick="deleteMilestone(<?= $m['id'] ?>,'tr<?= $i ?>')">Delete</button>
                                                     </td>
                                                 </form>
@@ -313,19 +313,19 @@ if ($res2->num_rows > 0) {
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="validationCustom01">Title</label>
+                                    <label for="validationCustom1">Title</label>
                                     <input type="text" class="form-control" id="validationCustom0s" name="title" required>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="validationCustom02">Due Date</label>
+                                    <label for="validationCustom2">Due Date</label>
                                     <input type="date" class="form-control" id="validationCustom" name="due_date" required>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 mb-3">
-                                    <label for="validationCustom03">Description</label>
+                                    <label for="validationCustom3">Description</label>
                                     <textarea type="text" class="form-control" id="validationCusto" name="description" required></textarea>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
@@ -404,8 +404,8 @@ if ($res2->num_rows > 0) {
     </div>
 </form>
 
-<!--edit modal-->
-<form method="post" enctype="multipart/form-data">
+<!-- Modal -->
+<form method="post" enctype="multipart/form-data" >
     <div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -419,80 +419,147 @@ if ($res2->num_rows > 0) {
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="validationCustom01">Name</label>
-                                    <input type="text" class="form-control" id="validationCustom01" name="ename" required>
+                                    <label for="validationCustom01">Title</label>
+                                    <input type="text" class="form-control" id="validationCustom01" name="title" required>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="validationCustom02">Contact</label>
-                                    <input type="text" class="form-control" id="validationCustom02" name="econtact" required>
+                                    <label for="validationCustom02">Due Date</label>
+                                    <input type="hidden" name="eid" id="eid">
+                                    <input type="date" class="form-control" id="validationCustom02" name="due_date" required>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="validationCustom03">Email</label>
-                                    <input type="hidden" id="eid" name="eid">
-                                    <input type="text" class="form-control" id="validationCustom03" name="eemail" required>
-                                    <div class="valid-feedback">Looks good!</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="validationCustom03">Password</label>
+                                <div class="col-md-12 mb-3">
+                                    <label for="validationCustom03">Description</label>
 
-                                    <input type="text" class="form-control" id="validationCustom04" name="epassword">
+                                    <textarea type="text" class="form-control" id="validationCustom03" name="description" required></textarea>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
-                    <!-- end breadcrumb -->
-                    <!-- <div class="card radius-15">
+
+                    <div class="card radius-15">
                         <div class="card-body">
                             <div class="card-title">
-                                <h4 class="mb-0">Change Image</h4>
+
+                                <h4 style="display:inline; margin-right:4px;" class="mb-0">Edit Files</h4>
+
+
+
+                                <div style="display:inline;" class="form-group">
+                                    <button type="button" class="btn btn-primary m-1" onclick="addFilesField2()"><i class=" fadeIn animated bx bx-plus"></i></button>
+                                </div>
                             </div>
                             <hr />
-                            <input id="fancy-file-upload2" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png" multiple><br><br>
+                            <div class="row" style="margin-bottom:20px">
+
+<?php
+// if (isset($project_img)) {
+    $counter = 0;
+    // foreach ($project_img as $file) {
+
+?>
+        <div class="col-md-2" id="file<?= $counter ?>">
+            <div class="col-md-8">
+                <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
+            </div>
+        </div>
+<?php
+        $counter++;
+
+?>
+
+
+</div>
+
+
+                            <div class="row">
+                                <div class="col-md-4" id="filesDiv3">
+
+
+                                </div>
+                            </div>
                         </div>
-                        
-                    </div> -->
 
+                    </div>
+                    <div class="card radius-15">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="validationCustom01">
+                                            Assign To:
+                                        </label>
+                                       
+                                        <select id="prim_skills2" name="employees[]" multiple>
+                                            <?php
+                                            if (isset($employeeName)) {
+                                                foreach ($employeeName as $e) {
+                                            ?>
 
+                                                    <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option>
 
-                </div>
-                <div class="modal-footer">
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </select>
 
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" name="edit">Save changes</button>
+                                        <div class="valid-feedback">Looks good!</div>
 
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button"  class="btn btn-primary" name="edit">Save changes</button>
+                                        
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
 <?php
 require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
-<!-- <script>
-    $('#fancy-file-upload').FancyFileUpload({
-        params: {
-            action: 'fileuploader'
-        },
-        maxfilesize: 1000000
-    });
-</script> -->
 
 <script>
-    $(document).ready(function() {
-        $('#prim_skills').multiselect({
-            nonSelectedText: 'Select Employees',
-            enableFiltering: true,
-            enableCaseInsensitiveFiltering: true,
-            buttonWidth: '400px'
-        });
-    })
+     $(document).ready(function() {
+            $('#prim_skills').multiselect({
+                nonSelectedText: 'Select Employees',
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                buttonWidth: '400px'
+            });
+        })
+
+        $(document).ready(function() {
+            $('#prim_skills2').multiselect({
+                nonSelectedText: 'Select Employees',
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                buttonWidth: '400px'
+            });
+        })
     var coun = 1;
 
     function addFilesField() {
@@ -510,6 +577,23 @@ require_once 'footer.php';
 
     }
 
+    var coun = 1;
+
+    function addFilesField2() {
+
+        var inhtml = `<div class="row" style="margin-top:20px" >    
+                            <div class="col-md-10">
+                                <input   type="file" id='projectfile${coun}' name="projectFile[]" class="form-control"/>
+                            </div> 
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger" onclick="removeField('projectfile${coun}')"><i class="fadeIn animated bx bx-trash"></i></button>
+                            </div> 
+                        </div>`;
+        $("#filesDiv3").append(inhtml);
+        coun++;
+
+    }
+
     function removeField(id) {
         $("#" + id).parent().parent().remove();
 
@@ -518,7 +602,7 @@ require_once 'footer.php';
 
     function deleteFile(id, divId) {
         $.ajax({
-            url: "del_ajaxMilestone.php",
+            url: "del_ajaxFiles.php",
             type: "POST",
             data: {
                 deleteId: id,
@@ -539,35 +623,14 @@ require_once 'footer.php';
 
         })
     }
-
+    var counter=0;
     function editSetValues(id, count) {
         $("#eid").val(id);
-        $("#validationCustom01").val($("#name" + count).html());
-        $("#validationCustom02").val($("#contact" + count).html());
-        $("#validationCustom03").val($("#email" + count).html());
-        $.ajax({
-            url: "edit_ajaxEmployee.php",
-            type: "POST",
-            data: {
-                editEmp: id,
-
-            },
-            success: function(data) {
-
-                if (data.trim() == "ok") {
-                    // $("#"+trId).remove();
-
-
-
-                } else {
-                    console.log(data);
-                }
-            },
-            error: function() {
-
-            }
-
-        })
+        
+        $("#validationCustom01").val($("#title" + count).html());
+        $("#validationCustom02").val($("#due_date" + count).html());
+        $("#validationCustom03").val($("#description" + count).html());
+        counter=count;
     }
 
     function deleteMilestone(id, trId) {
