@@ -53,8 +53,9 @@ if (isset($_POST['edit'])) {
         }
         
 
-        echo $sql = "delete from assigned_employees where project_id='$id'";
+         $sql = "delete from assigned_employees where project_id='$id'";
         if ($conn->query($sql)) {
+            
             echo $sql = "insert into assigned_employees(e_id,project_id) values";
             $employees = $_POST['employees'];
             foreach ($employees as $emp) {
@@ -62,6 +63,10 @@ if (isset($_POST['edit'])) {
             }
             $sql = rtrim($sql, ",");
             $conn->query($sql);
+            // if($conn->query($sql))
+            // {
+            //     echo $sql="delete from assigned_milestones where p_id='$id'";
+            // }
         }
         
         //  else {

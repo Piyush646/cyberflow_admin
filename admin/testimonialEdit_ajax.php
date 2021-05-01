@@ -1,6 +1,7 @@
 <?php
 require_once '../lib/core.php';
 if ( isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['eposition']) || isset(($_POST['edesc']))) {
+    $result=[];
     $id = $_POST['eid'];
     $name = $_POST['ename'];
     $sort_order = $_POST['esort_order'];
@@ -10,14 +11,17 @@ if ( isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['epo
     if ($conn->query($sql)) {
        
         $id=$_POST['eid'];
-        if(upload_imageUpdate($conn,"testimonials","img",'id',$id,"files"))
+        $image=upload_imageUpdate($conn,"testimonials","img",'id',$id,"files");
+        if($image!='err')
         {
-        echo "ok";
+            $result['msg']= "ok";
+            $result['image']='./uploads/'.$image;
     } else {
-        echo "not ok";
+        $result['msg']= "not ok";
     }
     } else {
-        echo "not very ok";
+        $result['msg']= "not  very ok";
     }
+    echo json_encode($result);
 }
 ?>

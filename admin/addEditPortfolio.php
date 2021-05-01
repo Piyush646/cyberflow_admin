@@ -50,13 +50,11 @@ if (isset($_GET['token'])) {
 
 //fetching images
 $id = $_GET['token'];
-$sql="select * from portfolio_img where p_id='$id'";
-$res= $conn->query($sql);
-if($res->num_rows > 0)
-{
-    while($row=$res->fetch_assoc())
-    {
-        $project_img[]=$row;
+$sql = "select * from portfolio_img where p_id='$id'";
+$res = $conn->query($sql);
+if ($res->num_rows > 0) {
+    while ($row = $res->fetch_assoc()) {
+        $project_img[] = $row;
     }
 }
 
@@ -109,6 +107,19 @@ if($res->num_rows > 0)
             <form method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-body">
+                    <?php
+                        if (isset($query)) {
+                            if ($query) {
+                        ?>
+                                <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                            <?php
+                            } else {
+                            ?>
+                                <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                        <?php
+                            }
+                        }
+                        ?>
                         <div class="card radius-15">
                             <div class="card-body">
                                 <div class="form-row">
@@ -183,7 +194,7 @@ if($res->num_rows > 0)
                                                     </div>
                                                 </div>
                                         <?php
-                                        $counter++;
+                                                $counter++;
                                             }
                                         }
 
@@ -226,6 +237,9 @@ require_once 'footer.php';
 
 ?>
 <script>
+    setTimeout(function() {
+        $(".alert").hide();
+    }, 4000);
     var counter = 1;
 
     function addFilesField() {
@@ -249,32 +263,27 @@ require_once 'footer.php';
 
     }
 
-    function deleteFile(id,divId,path)
-    {
+    function deleteFile(id, divId, path) {
         $.ajax({
-            url:"files_ajax.php",
-            type:"POST",
-            data:{
-                deleteFile:id,
-                delpath:path
+            url: "files_ajax.php",
+            type: "POST",
+            data: {
+                deleteFile: id,
+                delpath: path
             },
-            success:function(data)
-            {
-            
-                if(data.trim()=="ok")
-                {
-                    $("#"+divId).remove();
-                      
-                }else
-                {
+            success: function(data) {
+
+                if (data.trim() == "ok") {
+                    $("#" + divId).remove();
+
+                } else {
                     console.log(data);
                 }
             },
-            error:function()
-            {
+            error: function() {
 
             }
-        
+
         })
-    } 
+    }
 </script>

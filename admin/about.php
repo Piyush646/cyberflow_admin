@@ -31,17 +31,16 @@ require_once 'left_navbar.php';
 
 //editing
 if (isset($_POST['edit']) || isset($_POST['des'])) {
-    
+
     $des = $_POST['des'];
     $sql = "update about set des='$des'";
     if ($conn->query($sql)) {
-        $id=$_POST['edit'];
-        if(upload_imageUpdate($conn,"about","img",'id',$id,"files"))
-        {
-        $query = true;
-    } else {
-        $query=false;
-    }
+        $id = $_POST['edit'];
+        if (upload_imageUpdate($conn, "about", "img", 'id', $id, "files")) {
+            $editquery = true;
+        } else {
+            $editquery = false;
+        }
     } else {
         echo $conn->error;
     }
@@ -87,8 +86,20 @@ if ($res->num_rows > 0) {
             <form method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-body">
+                        <?php
+                        if (isset($editquery)) {
+                            if ($editquery) {
+                        ?>
+                                <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                            <?php
+                            } else {
+                            ?>
+                                <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                        <?php
+                            }
+                        }
+                        ?>
                         <div>
-
                             <div class="card radius-15">
                                 <div class="card-body">
                                     <div class="form-row">
@@ -121,7 +132,7 @@ if ($res->num_rows > 0) {
                                         </div>
                                     </div><br>
                                     <div class="col-md-2" style="margin-left:18px;">
-                                    <input id="fancy-file-upload" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png"><br>
+                                        <input id="fancy-file-upload" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png"><br>
                                     </div>
                                 </div>
 
@@ -141,6 +152,12 @@ require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
+
+<script>
+    setTimeout(function() {
+        $(".alert").hide();
+    }, 4000);
+</script>
 <!-- <script>
     $('#fancy-file-upload').FancyFileUpload({
         params: {

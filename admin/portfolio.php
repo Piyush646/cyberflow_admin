@@ -86,14 +86,14 @@ if ($res->num_rows > 0) {
                                             $i = 1;
                                             foreach ($projects as $p) {
                                         ?>
-                                                <tr>
+                                                <tr id="tr<?= $i ?>">
                                                     <th scope="row"><?= $i ?></th>
                                                     <td id="title<?= $i ?>"><?= $p['title'] ?></td>
                                                     <td id="link<?= $i ?>"><?= $p['link'] ?></td>
                                                     <td id="des<?= $i ?>"><?= $p['des'] ?></td>
 
                                                     <td><a href="addEditPortfolio.php?token=<?= $p['id'] ?>" type="button" class="btn btn-success m-1 px-3">Edit</a>
-                                                        <button type="submit" class="btn btn-danger m-1 px-3" value="<?= $p['id'] ?>" name="del">Delete</button>
+                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deletePortfolio(<?= $p['id'] ?>,'tr<?= $i ?>')"  name="del">Delete</button>
                                                     </td>
 
                                                 </tr>
@@ -120,22 +120,34 @@ require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
-<!-- <script>
-    $('#fancy-file-upload').FancyFileUpload({
-        params: {
-            action: 'fileuploader'
-        },
-        maxfilesize: 1000000
-    });
-</script> -->
+<script>
+function deletePortfolio(id, trId) {
+        if (confirm("Are you sure to delete?")) {
+            $.ajax({
+                url: "portfoliodelete_ajax.php",
+                type: "POST",
+                data: {
+                    deletePortfolio: id,
 
-<!-- <script>
-    function editSetValues(id, count) {
-        $("#eid").val(id);
-        $("#validationCustom01").val($("#name" + count).html());
-        $("#validationCustom02").val($("#position" + count).html());
-        $("#validationCustom03").val($("#sort_order" + count).html());
-        $("#edesc").val($("#des" + count).html());
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + trId).remove();
+
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+
+            })
+        }
 
     }
-</script> -->
+
+</script>

@@ -12,12 +12,12 @@ if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['sort_order'])
     $sql = "insert into testimonials (name,position,sort_order,des) values ('$name','$position','$sort_order','$des')";
     if ($conn->query($sql)) {
         $insert_id = $conn->insert_id;
-        if(upload_imageUpdate($conn,"testimonials","img",'id',$insert_id,"files"))
-        {
-        $query = true;
+        if (upload_imageUpdate($conn, "testimonials", "img", 'id', $insert_id, "files")) {
+            $addWithImage = true;
+        } else {
+            $addWithImage = false;
+        }
     } else {
-        $query=false;
-    }} else {
         echo $conn->error;
     }
 }
@@ -44,13 +44,12 @@ if (isset($_POST['edit']) || isset($_POST['ename']) || isset($_POST['esort_order
     $sql = "update testimonials set name='$name',position='$position',sort_order='$sort_order',des='$des' where id='$id'";
     if ($conn->query($sql)) {
         $query = true;
-        $id=$_POST['eid'];
-        if(upload_imageUpdate($conn,"testimonials","img",'id',$id,"files"))
-        {
-        $query = true;
-    } else {
-        $query=false;
-    }
+        $id = $_POST['eid'];
+        if (upload_imageUpdate($conn, "testimonials", "img", 'id', $id, "files")) {
+            $query = true;
+        } else {
+            $query = false;
+        }
     } else {
         echo $conn->error;
     }
@@ -93,7 +92,21 @@ if ($res->num_rows > 0) {
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" id="card-body">
+                <?php
+                if(isset($addWithImage))
+                {
+                    if ($addWithImage) {
+                    ?>
+                        <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                    <?php
+                    }
+                }
+                    ?>
                     <div>
                         <hr />
                         <div class="table-responsive">
@@ -104,7 +117,7 @@ if ($res->num_rows > 0) {
                                         <th scope="col">Name</th>
                                         <th scope="col">Position</th>
 
-                                        
+
                                         <th scope="col">Sort Order</th>
                                         <th scope="col">Image</th>
                                         <th scope="col">Description</th>
@@ -122,13 +135,13 @@ if ($res->num_rows > 0) {
                                                 <th scope="row"><?= $i ?></th>
                                                 <td id="name<?= $i ?>"><?= $t['name'] ?></td>
                                                 <td id="position<?= $i ?>"><?= $t['position'] ?></td>
-                                                
+
                                                 <td id="sort_order<?= $i ?>"><?= $t['sort_order'] ?></td>
-                                                <td><a href="<?=$t['img']?>" target="_blank"><img src="<?=$t['img']?>" width="100px" height="100px"/></a></td>
+                                                <td><a id="imagehref<?= $i ?>" href="<?= $t['img'] ?>" target="_blank"><img id="imagesrc<?= $i ?>" src="<?= $t['img'] ?>" width="100px" height="100px" /></a></td>
                                                 <td id="des<?= $i ?>"><?= $t['des'] ?></td>
                                                 <form method="post">
                                                     <td><button type="button" class="btn btn-success m-1 px-3" value="<?= $t['id'] ?>" onclick="editSetValues(<?= $t['id'] ?>,<?= $i ?>)" data-toggle="modal" data-target="#exampleModal6">Edit</button>
-                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteTestimonial(<?=$t['id']?>,'tr<?=$i?>')" name="del">Delete</button>
+                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteTestimonial(<?= $t['id'] ?>,'tr<?= $i ?>')" name="del">Delete</button>
                                                     </td>
                                                 </form>
                                             </tr>
@@ -203,26 +216,26 @@ if ($res->num_rows > 0) {
 
                             </div>
                             <hr />
-                            <input id="fancy-file-upload2" type="file" name="files"><br>
+                            <input id="fancy-file-upload" type="file" name="files"><br>
                             <div class="row" style="margin-bottom:20px">
 
                                 <?php
                                 if (isset($testimonial_image)) {
-                                    
+
 
                                 ?>
-                                        <div class="col-md-2" id="file">
-                                            <div class="col-md-8">
-                                                <a href="<?= $file['img'] ?>" target="_blank"><img src="<?= $file['img'] ?>" width="100px" height="100px" /></a>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>)"><i class="fa fa-trash"></i></button>
-                                            </div>
+                                    <div class="col-md-2" id="file">
+                                        <div class="col-md-8">
+                                            <a href="<?= $file['img'] ?>" target="_blank"><img src="<?= $file['img'] ?>" width="100px" height="100px" /></a>
                                         </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>)"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
                                 <?php
 
-                                    }
-                                
+                                }
+
 
                                 ?>
 
@@ -304,7 +317,7 @@ if ($res->num_rows > 0) {
                                 <h4 class="mb-0">Image Upload</h4>
                             </div>
                             <hr />
-                            <input id="fancy-file-upload2" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png" ><br>
+                            <input id="fancy-file-upload2" type="file" name="files" accept=".jpg, .png, image/jpeg, image/png"><br>
                         </div>
                     </div>
 
@@ -336,35 +349,55 @@ require_once 'footer.php';
 </script> -->
 
 <script>
-    var counter=0;
+    var counter = 0;
+
     function editSetValues(id, count) {
         $("#eid").val(id);
         $("#validationCustom01").val($("#name" + count).html());
         $("#validationCustom02").val($("#position" + count).html());
         $("#validationCustom03").val($("#sort_order" + count).html());
         $('#edesc').val(CKEDITOR.instances['edesc'].setData($("#des" + count).html()));
-        counter=count;
+        counter = count;
     }
 
 
 
     function editValues() {
+        var fd = new FormData();
+
+        fd.append('files', $("#fancy-file-upload2")[0].files[0]);
+        fd.append('eid', $("#eid").val());
+        fd.append('ename', $("#validationCustom01").val());
+        fd.append('eposition', $("#validationCustom02").val());
+        fd.append('esort_order', $("#validationCustom03").val());
+        fd.append('edesc', $("#edesc").val());
         $.ajax({
             url: "testimonialEdit_ajax.php",
             type: "POST",
-            data: $("#editM").serialize(),
+            data: fd,
+            processData: false,
+            contentType: false,
             success: function(data) {
-
-                if (data.trim() == "ok") {
+                var obj = JSON.parse(data)
+                if (obj.msg.trim() == "ok") {
                     {
-                        $("#name"+ counter).html($("#validationCustom01").val());
-                        $("#position"+ counter).html($("#validationCustom02").val());
-                        $("#sort_order"+ counter).html($("#validationCustom03").val());
-                        // $("#des"+ counter).html($("#edesc").val());
-                        
+                        $("#name" + counter).html($("#validationCustom01").val());
+                        $("#position" + counter).html($("#validationCustom02").val());
+                        $("#sort_order" + counter).html($("#validationCustom03").val());
+                        $("#des" + counter).html($("#edesc").val());
+                        $("#imagesrc" + counter).attr("src", obj.image);
+                        $("#imagehref" + counter).attr("href", obj.image);
+                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                        setTimeout(function() {
+                            $(".alert").hide();
+                        }, 4000);
                     }
                 } else {
-                    console.log(data);
+                    $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request was declined !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
+                    console.log(obj);
                 }
             },
             error: function() {
@@ -377,30 +410,31 @@ require_once 'footer.php';
 
 
     function deleteTestimonial(id, trId) {
-        $.ajax({
-            url: "testimonialdelete_ajaxMember.php",
-            type: "POST",
-            data: {
-                deleteTestimonial: id,
+        if (confirm("Are you sure to delete?")) {
+            $.ajax({
+                url: "testimonialdelete_ajaxMember.php",
+                type: "POST",
+                data: {
+                    deleteTestimonial: id,
 
-            },
-            success: function(data) {
+                },
+                success: function(data) {
 
-                if (data.trim() == "ok") {
-                    $("#" + trId).remove();
+                    if (data.trim() == "ok") {
+                        $("#" + trId).remove();
 
 
 
-                } else {
-                    console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
                 }
-            },
-            error: function() {
 
-            }
+            })
+        }
 
-        })
     }
-
-    
 </script>

@@ -116,7 +116,7 @@ function upload_imageUpdate($conn,$table,$column,$id_columnka_naam,$id,$image)
                 $uploadedFile = $fileName;
                 if(isset($table))
                 {
-                    echo $sql="update $table set $column='$targetPath' where $id_columnka_naam=$id";
+                    $sql="update $table set $column='$targetPath' where $id_columnka_naam=$id";
                     if($conn->query($sql)===true)
                     {
                         return $uploadedFile;

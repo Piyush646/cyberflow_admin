@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2021 at 10:51 AM
+-- Generation Time: May 01, 2021 at 10:52 AM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.8
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `about` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `des` text NOT NULL,
   `img` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -39,7 +39,7 @@ CREATE TABLE `about` (
 --
 
 INSERT INTO `about` (`id`, `des`, `img`) VALUES
-(1, '<p>we are a firm from dehradun . we have ethics. around 8 pm bjbkhvjjbj cgcghcghc</p>\r\n', 'uploads/1617432867_map.jpg');
+(1, '<p>we are a firm from dehradun . we have ethics. around 8 pm bjbkhvjjbj cgcghcghc vxcvc nnnn</p>\r\n', 'uploads/1619853042_b.png');
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ INSERT INTO `about` (`id`, `des`, `img`) VALUES
 --
 
 CREATE TABLE `admin` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `e_id` bigint(50) NOT NULL,
   `email` text NOT NULL,
   `password` text NOT NULL,
@@ -63,7 +63,6 @@ INSERT INTO `admin` (`id`, `e_id`, `email`, `password`, `status`) VALUES
 (6, 20, 'zf@345', 'f7c0e071db137f5ae65382041c7cef4b', 1),
 (8, 22, 'ayush@13', 'b2ca678b4c936f905fb82f2733f5297f', 1),
 (9, 0, 'admin@gmail.com', '12345', 0),
-(10, 23, 'p@gmail', '388ec3e3fa4983032b4f3e7d8fcb65ad', 1),
 (11, 24, 'xz @rgsr', '8fa14cdd754f91cc6554c9e71929cce7', 1);
 
 -- --------------------------------------------------------
@@ -83,11 +82,8 @@ CREATE TABLE `assigned_employees` (
 --
 
 INSERT INTO `assigned_employees` (`id`, `e_id`, `project_id`) VALUES
-(34, 22, 36),
-(35, 24, 36),
-(47, 20, 35),
-(48, 22, 35),
-(49, 24, 35);
+(51, 24, 36),
+(69, 22, 35);
 
 -- --------------------------------------------------------
 
@@ -111,7 +107,6 @@ CREATE TABLE `assigned_milestones` (
 
 INSERT INTO `assigned_milestones` (`id`, `p_id`, `m_id`, `e_id`, `excuse`, `comments`, `status`) VALUES
 (13, 35, 12, 22, 'i was not well bhhh', 'content was not clear hhhhhhhhh', 0),
-(14, 35, 12, 23, 'busy in other projects', 'suitable files not provided', 0),
 (33, 36, 23, 22, 'php shi se ni pdi h mne', 'backend teacher was not good\r\n', 0),
 (34, 36, 23, 24, '', '', 0),
 (35, 36, 24, 22, '', '', 0),
@@ -124,7 +119,7 @@ INSERT INTO `assigned_milestones` (`id`, `p_id`, `m_id`, `e_id`, `excuse`, `comm
 --
 
 CREATE TABLE `assign_project` (
-  `id` bigint(11) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `due_date` date NOT NULL,
   `description` text NOT NULL
@@ -145,7 +140,7 @@ INSERT INTO `assign_project` (`id`, `name`, `due_date`, `description`) VALUES
 --
 
 CREATE TABLE `employee` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `email` text NOT NULL,
   `contact` text NOT NULL,
@@ -159,7 +154,6 @@ CREATE TABLE `employee` (
 INSERT INTO `employee` (`id`, `name`, `email`, `contact`, `password`) VALUES
 (20, 'bbmnkkkkkkbb', 'zf@345nnn', '8888', '77904eff2f05cbf1aafc2108d021fa26'),
 (22, 'ayush', 'ayush@13', '99', 'b2ca678b4c936f905fb82f2733f5297f'),
-(23, 'pnchu', 'p@gmail', '8888', '8a21cc4b32061760e384861289579573'),
 (24, 'xcvxc', 'xz @rgsr', 'vxc', 'ac2d3e188413c20795057839e2f69d40');
 
 -- --------------------------------------------------------
@@ -169,7 +163,7 @@ INSERT INTO `employee` (`id`, `name`, `email`, `contact`, `password`) VALUES
 --
 
 CREATE TABLE `getintouch` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `email` text NOT NULL,
   `phn` text NOT NULL,
@@ -253,7 +247,7 @@ INSERT INTO `milestone_files` (`id`, `e_id`, `p_id`, `m_id`, `img`) VALUES
 --
 
 CREATE TABLE `portfolio` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `title` text NOT NULL,
   `link` text NOT NULL,
   `des` text NOT NULL
@@ -273,8 +267,8 @@ INSERT INTO `portfolio` (`id`, `title`, `link`, `des`) VALUES
 --
 
 CREATE TABLE `portfolio_img` (
-  `id` bigint(20) NOT NULL,
-  `p_id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
+  `p_id` bigint(50) NOT NULL,
   `img` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -293,8 +287,8 @@ INSERT INTO `portfolio_img` (`id`, `p_id`, `img`) VALUES
 --
 
 CREATE TABLE `project_files` (
-  `id` bigint(20) NOT NULL,
-  `p_id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
+  `p_id` bigint(50) NOT NULL,
   `img` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -319,7 +313,7 @@ INSERT INTO `project_files` (`id`, `p_id`, `img`) VALUES
 --
 
 CREATE TABLE `recruitment` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `email` text NOT NULL,
   `qualification` text NOT NULL,
@@ -346,7 +340,7 @@ INSERT INTO `recruitment` (`id`, `name`, `email`, `qualification`, `resume`, `sp
 --
 
 CREATE TABLE `team` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `position` text NOT NULL,
   `image` text NOT NULL,
@@ -358,8 +352,9 @@ CREATE TABLE `team` (
 --
 
 INSERT INTO `team` (`id`, `name`, `position`, `image`, `sort_order`) VALUES
-(32, 'seesesexxxxxxxxxxxx', 'sssssxxxxxxxxxxxxxx', 'uploads/1617434526_ada.png', 1),
-(36, 'hgghghxxx', 'cvicexxxx', 'uploads/1619581365_fast.png', 6);
+(37, 'bbbbvb', 'acadvavcvcv', 'uploads/1619688008_d.png', 88),
+(39, 'vvvvvvvvvvvb', 'vicebbcc', 'uploads/1619841350_ch_wall.jpg', 59),
+(42, 'bbbbbbeeee', 'vveeeee', 'uploads/1619839178_4.jpg', 90);
 
 -- --------------------------------------------------------
 
@@ -368,7 +363,7 @@ INSERT INTO `team` (`id`, `name`, `position`, `image`, `sort_order`) VALUES
 --
 
 CREATE TABLE `testimonials` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `name` text NOT NULL,
   `position` text NOT NULL,
   `sort_order` int(11) NOT NULL,
@@ -381,8 +376,8 @@ CREATE TABLE `testimonials` (
 --
 
 INSERT INTO `testimonials` (`id`, `name`, `position`, `sort_order`, `des`, `img`) VALUES
-(9, 'bnnnnnnn', 'mmmxxxxxx', 9, '', 'uploads/1617434878_Screenshot2021-03-21144248.png'),
-(11, 'hxvch', 'chgc', 5, '<p>ggsdzb</p>\r\n', 'uploads/1617547362_Screenshot(3).png');
+(9, 'bnnnnnnnaaaacc', 'mmmxxxxxxccccvvv', 912, '', 'uploads/1619841492_r.png'),
+(11, 'hxvch', 'chgc', 5, '', 'uploads/1619841698_lu.jpg');
 
 -- --------------------------------------------------------
 
@@ -391,7 +386,7 @@ INSERT INTO `testimonials` (`id`, `name`, `position`, `sort_order`, `des`, `img`
 --
 
 CREATE TABLE `web_config` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(50) NOT NULL,
   `title` text NOT NULL,
   `phn` text NOT NULL,
   `address` text NOT NULL,
@@ -407,7 +402,7 @@ CREATE TABLE `web_config` (
 --
 
 INSERT INTO `web_config` (`id`, `title`, `phn`, `address`, `facebook`, `twitter`, `instagram`, `linkedin`, `logo`) VALUES
-(1, 'fjvnfj', '33333333', 'wegeg', 'dfnblkd', 'srbr', 'bsrf', 'fb', 'uploads/1617617529_1.png');
+(1, 'fjvnfjbb', '333333335', 'wegeg', 'dfnblkd', 'srbr', 'bsrf', 'fb', 'uploads/1617617529_1.png');
 
 --
 -- Indexes for dumped tables
@@ -517,19 +512,19 @@ ALTER TABLE `web_config`
 -- AUTO_INCREMENT for table `about`
 --
 ALTER TABLE `about`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `assigned_employees`
 --
 ALTER TABLE `assigned_employees`
-  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `assigned_milestones`
@@ -541,19 +536,19 @@ ALTER TABLE `assigned_milestones`
 -- AUTO_INCREMENT for table `assign_project`
 --
 ALTER TABLE `assign_project`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `getintouch`
 --
 ALTER TABLE `getintouch`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `milestones`
@@ -571,43 +566,43 @@ ALTER TABLE `milestone_files`
 -- AUTO_INCREMENT for table `portfolio`
 --
 ALTER TABLE `portfolio`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `portfolio_img`
 --
 ALTER TABLE `portfolio_img`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `project_files`
 --
 ALTER TABLE `project_files`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `recruitment`
 --
 ALTER TABLE `recruitment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `testimonials`
 --
 ALTER TABLE `testimonials`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `web_config`
 --
 ALTER TABLE `web_config`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

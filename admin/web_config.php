@@ -21,9 +21,9 @@ if (isset($_POST['edit'])) {
 
 
             if (upload_imageUpdate($conn, "web_config", "logo", 'id', $id['id'], "files")) {
-                $query = true;
+                $editquery = true;
             } else {
-                $query = false;
+                $editquery = false;
             }
         } else {
             echo $conn->error;
@@ -56,12 +56,26 @@ if ($res->num_rows > 0) {
                 </div>
                 <div class="ml-auto">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary m-1" onclick="editWeb()" ><i class="fadeIn animated bx bx-edit-alt"></i></button>
+                        <button type="button" class="btn btn-primary m-1" onclick="editWeb()"><i class="fadeIn animated bx bx-edit-alt"></i></button>
                     </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
+                <?php
+                if(isset($editquery))
+                {
+                    if ($editquery) {
+                    ?>
+                        <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                    <?php
+                    }
+                }
+                    ?>
                     <form method="post" enctype="multipart/form-data">
                         <div class="card radius-15">
                             <div class="card-body">
@@ -70,7 +84,7 @@ if ($res->num_rows > 0) {
                                         <label for="validationCustom01">
                                             Title
                                         </label>
-                                        <input type="text" class="form-control" id="validationCustom01" name="title" value="<?= $config['title'] ?>" disabled  required>
+                                        <input type="text" class="form-control" id="validationCustom01" name="title" value="<?= $config['title'] ?>" disabled required>
                                         <div class="valid-feedback">Looks good!</div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -109,7 +123,7 @@ if ($res->num_rows > 0) {
                                         <label for="validationCustom02">
                                             Twitter
                                         </label>
-                                        <input type="link" class="form-control" id="validationCustom02" name="twi" value="<?= $config['twitter'] ?>" disabled  required>
+                                        <input type="link" class="form-control" id="validationCustom02" name="twi" value="<?= $config['twitter'] ?>" disabled required>
                                         <div class="valid-feedback">Looks good!</div>
                                     </div>
                                 </div>
@@ -162,11 +176,14 @@ if ($res->num_rows > 0) {
 
     ?>
     <script>
-        function editWeb()
-        {
+        setTimeout(function() {
+            $(".alert").hide();
+        }, 4000);
+
+        function editWeb() {
             $("input").removeAttr("disabled");
             // $("#fancy-file-upload").
-            document.getElementById("edit").style.visibility="visible";
-            document.getElementById("fancy-file-upload").style.visibility="visible";
+            document.getElementById("edit").style.visibility = "visible";
+            document.getElementById("fancy-file-upload").style.visibility = "visible";
         }
     </script>
