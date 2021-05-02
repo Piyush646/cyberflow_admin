@@ -14,7 +14,8 @@ if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) 
     if ($conn->query($sql)) {
         $id = $conn->insert_id;
         $id2=$_GET['token'];
-        if (upload_imagesInsert($conn, "milestone_files", "m_id", 'img', $id, "projectFile")) {
+        $projectArr=["p_id"=>$id2];
+        if (upload_imageNcolumn($conn, "milestone_files", "m_id", 'img', $id, "projectFile",$projectArr)) {
             $query = true;
         } else {
             $query = false;

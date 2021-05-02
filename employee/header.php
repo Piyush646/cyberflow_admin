@@ -24,6 +24,45 @@ if($res->num_rows > 0)
 
 
 <head>
+	<style>
+
+.custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+    border-color: #1fcecb !important;
+	box-shadow:0 0 0 0.05rem #1fcecb !important;
+}
+
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    color: #fff !important;
+    border-color: #1fcecb !important;
+	background-color:#1fcecb !important; 
+    box-shadow:0 0 0 0.05rem #1fcecb !important;
+}
+
+
+
+.btn-primary
+{
+	background-color:#1fcecb !important;
+	border-color:#1fcecb !important;
+  box-shadow:0 0 0 0.05rem #1fcecb !important;
+}
+.bx-home-alt
+{
+	color:#1fcecb;
+}
+	 .form-control:focus{
+  border-color:#1fcecb !important;
+  box-shadow:0 0 0 0.05rem #1fcecb !important;
+}
+
+
+.sidebar-wrapper .metismenu a:hover, .sidebar-wrapper .metismenu a:focus, .sidebar-wrapper .metismenu a:active, .sidebar-wrapper .metismenu .mm-active>a {
+    color: #1fcecb !important;
+    text-decoration: none !important;
+    background: rgb(103 58 183 / 10%) !important;
+}
+</style>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

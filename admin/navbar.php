@@ -1,5 +1,5 @@
 <?php
-
+require_once '../lib/core.php';
 //fetching
 $sql="select * from web_config";
 $res= $conn->query($sql);
@@ -38,7 +38,7 @@ if($res->num_rows > 0)
 						
 						<li class="nav-item dropdown dropdown-lg">
 							<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="javascript:;" data-toggle="dropdown">	<i class="bx bx-bell vertical-align-middle"></i>
-								<span class="msg-count">8</span>
+								<span style="background-color:#1fcecb;" class="msg-count">8</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<a href="javascript:;">

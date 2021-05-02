@@ -5,46 +5,43 @@ require_once 'left_navbar.php';
 
 //inserting
 print_r($_POST);
-if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) 
-{
+if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $contact = $_POST['contact'];
     $password = $_POST['password'];
     $sql = "insert into employee(name,email,contact,password) values ('$name','$email','$contact',MD5('$password'))";
     if ($conn->query($sql)) {
-    
-        $id=$conn->insert_id;
+
+        $id = $conn->insert_id;
         $email = $_POST['email'];
         $password = $_POST['password'];
         $sql = "insert into admin(email,e_id,password,status) values ('$email','$id',MD5('$password'),1)";
         if ($conn->query($sql)) {
+            $query = true;
+        } else {
+            $query=false;
         }
-        else {
-            echo $conn->error;
-        }
-    }
-    
-    else {
-        echo $conn->error;
+    } else {
+        $query=false;
     }
 }
 
 // if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
-    
+
 //     $email = $_POST['email'];
-   
+
 //     $password = $_POST['password'];
 //     $sql = "insert into admin(email,password,status) values ('$email',MD5('$password'),1)";
 //     if ($conn->query($sql)) {
 //     }
-    //     $id=$conn->insert_id;
-    //     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-    //     {
-    //     $query = true;
-    // } else {
-    //     $query=false;
-    // }}
+//     $id=$conn->insert_id;
+//     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
+//     {
+//     $query = true;
+// } else {
+//     $query=false;
+// }}
 //     else {
 //         echo $conn->error;
 //     }
@@ -91,7 +88,21 @@ if ($res->num_rows > 0) {
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" id="card-body">
+                <?php
+                if(isset($query))
+                {
+                    if ($query) {
+                    ?>
+                        <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                    <?php
+                    }
+                }
+                    ?>
                     <div>
                         <hr />
                         <div class="table-responsive">
@@ -104,7 +115,7 @@ if ($res->num_rows > 0) {
 
 
                                         <th scope="col">Email</th>
-                                       
+
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -120,7 +131,7 @@ if ($res->num_rows > 0) {
                                                 <td id="contact<?= $i ?>"><?= $t['contact'] ?></td>
 
                                                 <td id="email<?= $i ?>"><?= $t['email'] ?></td>
-                                                
+
                                                 <form method="post">
                                                     <td><button type="button" class="btn btn-success m-1 px-3" onclick="editSetValues(<?= $t['id'] ?>,<?= $i ?>)" data-toggle="modal" data-target="#exampleModal6">Edit</button>
                                                         <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteEmp(<?= $t['id'] ?>,'tr<?= $i ?>')">Delete</button>
@@ -280,9 +291,9 @@ require_once 'footer.php';
 </script> -->
 
 <script>
+    var counter = 0;
+    console.log(counter);
 
-    var counter=0;
-console.log(counter);
     function editSetValues(id, count) {
         $("#count").val(count);
         $("#eid").val(id);
@@ -302,14 +313,20 @@ console.log(counter);
 
                 if (data.trim() == "ok") {
                     {
-                        $("#name"+ counter).html($("#validationCustom01").val());
-                        $("#contact"+ counter).html($("#validationCustom02").val());
-                        $("#email"+ counter).html($("#validationCustom03").val());
-
-                        // $("#password"+ counter).html($("#validationCustom04").val());
+                        $("#name" + counter).html($("#validationCustom01").val());
+                        $("#contact" + counter).html($("#validationCustom02").val());
+                        $("#email" + counter).html($("#validationCustom03").val());
+                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>`);
+                        setTimeout(function() {
+                            $(".alert").hide();
+                        }, 4000);
                         
                     }
                 } else {
+                    $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request has been declined !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
                     console.log(data);
                 }
             },
@@ -321,28 +338,35 @@ console.log(counter);
     }
 
     function deleteEmp(id, trId) {
-        $.ajax({
-            url: "delete_ajaxEmployee.php",
-            type: "POST",
-            data: {
-                deleteEmp: id,
+        if (confirm("Are you sure to delete?")) {
+            $.ajax({
+                url: "delete_ajaxEmployee.php",
+                type: "POST",
+                data: {
+                    deleteEmp: id,
 
-            },
-            success: function(data) {
+                },
+                success: function(data) {
 
-                if (data.trim() == "ok") {
-                    $("#" + trId).remove();
+                    if (data.trim() == "ok") {
+                        $("#" + trId).remove();
 
 
 
-                } else {
-                    console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
                 }
-            },
-            error: function() {
 
-            }
+            })
+        }
 
-        })
     }
+
+    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
 </script>

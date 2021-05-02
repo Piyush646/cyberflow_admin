@@ -175,5 +175,5 @@ if (isset($empDetail)) {
 </div>
 <?php
 include_once "js_links.php";
-include_once "footer.php";
+include_once "../admin/footer.php";
 ?>

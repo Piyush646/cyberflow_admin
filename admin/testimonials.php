@@ -255,7 +255,7 @@ if ($res->num_rows > 0) {
                 <div class="modal-footer">
 
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="add">Save changes</button>
+                    <button type="submit" class="btn btn-primary" name="add">Add</button>
 
                 </div>
             </div>

@@ -3,26 +3,7 @@ require_once 'header.php';
 require_once 'navbar.php';
 require_once 'left_navbar.php';
 
-//inserting
-// print_r($_POST);
-// if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
-//     $name = $_POST['name'];
-//     $email = $_POST['email'];
-//     $contact = $_POST['contact'];
-//     $password=$_POST['password'];
-//     $sql = "insert into employee(name,email,contact,password) values ('$name','$email','$contact',MD5('$password'))";
-//     if ($conn->query($sql)) {}
-//     //     $id=$conn->insert_id;
-//     //     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-//     //     {
-//     //     $query = true;
-//     // } else {
-//     //     $query=false;
-//     // }}
-//     else{
-//         echo $conn->error;
-//     }
-// }
+
 
 
 //deleting
@@ -78,22 +59,20 @@ if ($res->num_rows > 0) {
 if (isset($project)) {
     foreach ($project as $p) {
         $p_id = $p['id'];
-$sql2 = "select * from project_files where p_id='$p_id'";
-$res2 = $conn->query($sql2);
-if ($res2->num_rows > 0) {
-    while ($row2 = $res2->fetch_assoc()) {
-        $p_files[] = $row2;
-    }
-}
-    $sql3 = "select * from assigned_employees where project_id='$p_id'";
-    $res3 = $conn->query($sql3);
-    if ($res3->num_rows > 0) {
-        while ($row3 = $res3->fetch_assoc()) {
-            $assigned_emp[] = $row3;
+        $sql2 = "select * from project_files where p_id='$p_id'";
+        $res2 = $conn->query($sql2);
+        if ($res2->num_rows > 0) {
+            while ($row2 = $res2->fetch_assoc()) {
+                $p_files[] = $row2;
+            }
         }
-    }
-
-
+        $sql3 = "select * from assigned_employees where project_id='$p_id'";
+        $res3 = $conn->query($sql3);
+        if ($res3->num_rows > 0) {
+            while ($row3 = $res3->fetch_assoc()) {
+                $assigned_emp[] = $row3;
+            }
+        }
     }
 }
 // print_r($assigned_emp);
@@ -206,26 +185,22 @@ if ($res2->num_rows > 0) {
 
                                                     ?>
                                                 </td>
-                                                
+
                                                 <td>
-                                                    <?php 
-                                                    if(isset($assigned_emp))
-                                                    {
-                                                        foreach($assigned_emp as $a)
-                                                        {
-                                                            if($t['id']==$a['project_id'])
-                                                            {
-                                                                $eid=$a['e_id'];
-                                                                $sql="select * from employee where id='$eid'";
-                                                                $res= $conn->query($sql);
-                                                                if($res->num_rows > 0)
-                                                                {
-                                                                    $ename=$res->fetch_assoc();
+                                                    <?php
+                                                    if (isset($assigned_emp)) {
+                                                        foreach ($assigned_emp as $a) {
+                                                            if ($t['id'] == $a['project_id']) {
+                                                                $eid = $a['e_id'];
+                                                                $sql = "select * from employee where id='$eid'";
+                                                                $res = $conn->query($sql);
+                                                                if ($res->num_rows > 0) {
+                                                                    $ename = $res->fetch_assoc();
                                                                 }
-                                                                ?>
-                                                                
-                                                                <p style="display:inline"><?=$ename['name']?> ,<br></p>
-                                                                <?php
+                                                    ?>
+
+                                                                <p style="display:inline"><?= $ename['name'] ?> ,<br></p>
+                                                    <?php
                                                             }
                                                         }
                                                     }
@@ -233,7 +208,7 @@ if ($res2->num_rows > 0) {
                                                 </td>
                                                 <form method="post">
                                                     <td><a href="addEditProject.php?token=<?= $t['id'] ?>" class="btn btn-success m-1 px-3">Edit</a>
-                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteProject('<?=$t['id']?>','tr<?=$i?>')">Delete</button>
+                                                        <button type="button" class="btn btn-danger m-1 px-3" onclick="deleteProject('<?= $t['id'] ?>','tr<?= $i ?>')">Delete</button>
                                                         <a href="milestone.php?token=<?= $t['id'] ?>" class="btn btn-info m-1 px-3">Milestones</a>
                                                     </td>
                                                 </form>
@@ -380,32 +355,33 @@ require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
- <script>
-    
+<script>
+    function deleteProject(id, trId) {
+        if (confirm("Are you sure to delete?")) {
+            $.ajax({
+                url: "delete_ajaxProject.php",
+                type: "POST",
+                data: {
+                    deleteId: id,
 
-function deleteProject(id, trId) {
-        $.ajax({
-            url: "delete_ajaxProject.php",
-            type: "POST",
-            data: {
-                deleteId: id,
+                },
+                success: function(data) {
 
-            },
-            success: function(data) {
-
-                if (data.trim() == "ok") {
-                    $("#" + trId).remove();
-
+                    if (data.trim() == "ok") {
+                        $("#" + trId).remove();
 
 
-                } else {
-                    console.log(data);
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
                 }
-            },
-            error: function() {
 
-            }
+            })
+        }
 
-        })
     }
 </script>

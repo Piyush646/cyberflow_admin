@@ -104,11 +104,11 @@ if(isset($_COOKIE['ColorLessIcons']))
 }
 ?>
 <div class="footer">
-			<p class="mb-0">Cyberflow @2021 | Developed By : <a href="https://cyberflow.in" target="_blank">cyberflow</a>
+			<p class="mb-0">Cyberflow @2021 | Developed By : <a style="color:#1fcecb;"href="https://cyberflow.in" target="_blank">cyberflow</a>
 			</p>
 		</div>
         <div class="switcher-wrapper">
-		<div class="switcher-btn"> <i class='bx bx-cog bx-spin'></i>
+		<div style="background-color:#1fcecb;" class="switcher-btn"> <i style="color:none;"class='bx bx-cog bx-spin'></i>
 		</div>
 		<div class="switcher-body">
 			<h5 class="mb-0 text-uppercase">Theme Customizer</h5>

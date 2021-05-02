@@ -162,15 +162,14 @@ function upload_imagesInsert($conn,$table,$id_col,$column,$id,$images)
         {
             $file_name=$_FILES[$images]["name"][$key];
             $file_tmp=$_FILES[$images]["tmp_name"][$key];
-            echo $ext=pathinfo($file_name,PATHINFO_EXTENSION); 
+            $ext=pathinfo($file_name,PATHINFO_EXTENSION); 
             if(in_array(strtolower($ext),$extension)) 
             {
                 $filename=basename($file_name,$ext);
-                $newFileName=$filename.time().".".$ext;
+               $newFileName=$filename.time().".".$ext;
                 if(move_uploaded_file($file_tmp=$_FILES[$images]["tmp_name"][$key],"uploads/".$newFileName))
                 {
-                   echo  $sql="insert into $table($id_col, $column) values($id,'$newFileName')";
-                      $conn->query($sql);
+                   $sql="insert into $table($id_col, $column) values($id,'$newFileName')"; 
                     if($conn->query($sql)===true)
                     {
                         $status=true;
@@ -181,8 +180,61 @@ function upload_imagesInsert($conn,$table,$id_col,$column,$id,$images)
                         break;
                     }
                 }
-                else
-        
+                else 
+                {
+                    $status=false;
+                    break;
+                }
+            }
+            else 
+            {
+                array_push($error,"$file_name, ");
+            }
+        }
+        return $status;
+    }
+}
+  
+function upload_imageNcolumn($conn,$table,$id_col,$column,$id,$images,$columnArr)
+{
+    // print_r($_FILES);
+	if(isset($_FILES[$images]))
+    {
+        $extension=array("jpeg","jpg","png","gif","pdf","PDF","JPG");
+        foreach($_FILES[$images]["tmp_name"] as $key=>$tmp_name) 
+        {
+            $file_name=$_FILES[$images]["name"][$key];
+            $file_tmp=$_FILES[$images]["tmp_name"][$key];
+            $ext=pathinfo($file_name,PATHINFO_EXTENSION); 
+            if(in_array(strtolower($ext),$extension)) 
+            {
+                $filename=basename($file_name,$ext);
+               $newFileName=$filename.time().".".$ext;
+                if(move_uploaded_file($file_tmp=$_FILES[$images]["tmp_name"][$key],"uploads/".$newFileName))
+                {
+                   $sql="insert into $table($id_col, $column) values($id,'$newFileName')"; 
+                    if($conn->query($sql)===true)
+                    {
+                        $insert_id = $conn->insert_id;
+                        $sql = "update $table set ";
+                        foreach($columnArr as $col_name =>$col_value)
+                        {
+                            $sql.="$col_name='$col_value'";
+                        }
+                        $sql .= " where id='$insert_id'";
+                        if($conn->query($sql))
+                        {
+                              $status=true;
+                        }
+                      
+                    }
+                    else
+                    {
+                        $status=false;
+                        break;
+                    }
+                }
+                else 
                 {
                     $status=false;
                     break;

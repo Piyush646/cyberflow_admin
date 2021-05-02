@@ -26,7 +26,7 @@ if (isset($_POST['add'])) {
             $query = false;
         }
         $employees = $_POST['employees'];
-        echo $sql = "insert into assigned_employees(e_id,project_id) values";
+        $sql = "insert into assigned_employees(e_id,project_id) values";
         foreach ($employees as $emp) {
             $sql .= "('$emp','$id'),";
         }
@@ -55,18 +55,14 @@ if (isset($_POST['edit'])) {
 
          $sql = "delete from assigned_employees where project_id='$id'";
         if ($conn->query($sql)) {
-            
-            echo $sql = "insert into assigned_employees(e_id,project_id) values";
             $employees = $_POST['employees'];
+            echo $sql = "insert into assigned_employees(e_id,project_id) values";
             foreach ($employees as $emp) {
                 $sql .= "('$emp','$id'),";
             }
             $sql = rtrim($sql, ",");
             $conn->query($sql);
-            // if($conn->query($sql))
-            // {
-            //     echo $sql="delete from assigned_milestones where p_id='$id'";
-            // }
+           
         }
         
         //  else {
@@ -138,6 +134,20 @@ if (isset($_GET['token'])) {
             </div>
             <div class="card">
                 <div class="card-body">
+                <?php
+                if(isset($query))
+                {
+                    if ($query) {
+                    ?>
+                        <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                    <?php
+                    }
+                }
+                    ?>
                     <form method="post" enctype="multipart/form-data">
                         <div class="card radius-15">
                             <div class="card-body">

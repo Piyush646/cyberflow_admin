@@ -14,8 +14,10 @@ if (isset($_POST['deleteId'])) {
                 if ($conn->query($sql)) {
                     $sql = "delete  from assigned_milestones where p_id=$id";
                     if($conn->query($sql))
-                    {
-                            $sql="delete milestone_files from milestone_files inner join milestones on milestone_files.m_id=milestones.id where milestones.p_id=$id";
+                    // {
+                    //          $sql="delete milestone_files from milestone_files inner join milestones on milestones.id =  milestone_files.m_id
+                    //         where milestones.p_id = '$id'";
+                    $sql="delete from milestone_files where p_id=$id";
                             if ($conn->query($sql)) {
                                 echo "ok";
                             } else {
@@ -34,8 +36,4 @@ if (isset($_POST['deleteId'])) {
         } else {
             echo $conn->error;
         }
-    } else {
-        echo $conn->error;
-    }
-
-}
+    } 

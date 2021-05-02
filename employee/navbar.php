@@ -38,7 +38,7 @@ if($res->num_rows > 0)
 						
 						<li class="nav-item dropdown dropdown-lg">
 							<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="javascript:;" data-toggle="dropdown">	<i class="bx bx-bell vertical-align-middle"></i>
-								<span class="msg-count">8</span>
+								<span style="background-color:#1fcecb;" class="msg-count">8</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<a href="javascript:;">
@@ -169,7 +169,7 @@ if($res->num_rows > 0)
 								<a class="dropdown-item" href="dashboard.php"><i
 										class="bx bx-tachometer"></i><span>Dashboard</span></a>
 								
-								<div class="dropdown-divider mb-0"></div>	<a class="dropdown-item" href="logout.php"><i
+								<div class="dropdown-divider mb-0"></div>	<a class="dropdown-item" href="../admin/logout.php"><i
 										class="bx bx-power-off"></i><span>Logout</span></a>
 							</div>
 						</li>

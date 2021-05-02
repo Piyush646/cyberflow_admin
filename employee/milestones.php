@@ -305,7 +305,7 @@ if ($res2->num_rows > 0) {
 </form>
 <?php
 require_once 'js_links.php';
-require_once 'footer.php';
+require_once '../admin/footer.php';
 
 ?>
 <!-- <script>
