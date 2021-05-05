@@ -3,36 +3,11 @@ require_once 'header.php';
 require_once 'navbar.php';
 require_once 'left_navbar.php';
 
-// //inserting
-// if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['sort_order']) && isset($_POST['position']) && isset($_POST['des'])) {
-//     $name = $_POST['name'];
-//     $sort_order = $_POST['sort_order'];
-//     $position = $_POST['position'];
-//     $des = $_POST['des'];
-//     $sql = "insert into testimonials (name,position,sort_order,des) values ('$name','$position','$sort_order','$des')";
-//     if ($conn->query($sql)) {
-//         $query = true;
-//     } else {
-//         echo $conn->error;
-//     }
-// }
-
-
-// //deleting
-// if (isset($_POST['del'])) {
-//     $id = $_POST['del'];
-//     $sql = "delete  from testimonials where id=$id";
-//     if ($conn->query($sql)) {
-//         $query = true;
-//     } else {
-//         echo $conn->error;
-//     }
-// }
 
 //editing
 if (isset($_POST['edit']) || isset($_POST['des'])) {
 
-    $des = $_POST['des'];
+    $des = $conn->real_escape_string(($_POST['des']));
     $sql = "update about set des='$des'";
     if ($conn->query($sql)) {
         $id = $_POST['edit'];

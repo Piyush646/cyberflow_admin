@@ -370,7 +370,7 @@ require_once 'footer.php';
         fd.append('ename', $("#validationCustom01").val());
         fd.append('eposition', $("#validationCustom02").val());
         fd.append('esort_order', $("#validationCustom03").val());
-        fd.append('edesc', $("#edesc").val());
+        fd.append('edesc', CKEDITOR.instances['edesc'].getData());
         $.ajax({
             url: "testimonialEdit_ajax.php",
             type: "POST",
@@ -384,7 +384,7 @@ require_once 'footer.php';
                         $("#name" + counter).html($("#validationCustom01").val());
                         $("#position" + counter).html($("#validationCustom02").val());
                         $("#sort_order" + counter).html($("#validationCustom03").val());
-                        $("#des" + counter).html($("#edesc").val());
+                        $("#des" + counter).html(CKEDITOR.instances['edesc'].getData());
                         $("#imagesrc" + counter).attr("src", obj.image);
                         $("#imagehref" + counter).attr("href", obj.image);
                         $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);

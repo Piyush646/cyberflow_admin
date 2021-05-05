@@ -51,9 +51,11 @@ if (isset($_POST['edit'])) {
         } else {
             $query = false;
         }
-        
 
-         $sql = "delete from assigned_employees where project_id='$id'";
+        $sql = "delete from assigned_milestones where p_id='$id'";
+        if($conn->query($sql))
+        {
+        $sql = "delete from assigned_employees where project_id='$id'";
         if ($conn->query($sql)) {
             $employees = $_POST['employees'];
             echo $sql = "insert into assigned_employees(e_id,project_id) values";
@@ -62,9 +64,9 @@ if (isset($_POST['edit'])) {
             }
             $sql = rtrim($sql, ",");
             $conn->query($sql);
-           
         }
-        
+    }
+
         //  else {
         //     $query2 = false;
     }
@@ -95,6 +97,23 @@ if (isset($_GET['token'])) {
         }
     }
 }
+
+//fetching assigned_employees
+if (isset($_GET['token'])) {
+    $assignedEmp = [];
+    $id = $_GET['token'];
+    $sql = "select * from assigned_employees where project_id='$id'";
+    $res = $conn->query($sql);
+    if ($res->num_rows > 0) {
+        while ($row = $res->fetch_assoc()) {
+            array_push($assignedEmp, $row['e_id']);
+            // $assignedEmp[] = $row;
+        }
+    }
+}
+
+
+
 
 ?>
 <div class="page-wrapper">
@@ -134,19 +153,18 @@ if (isset($_GET['token'])) {
             </div>
             <div class="card">
                 <div class="card-body">
-                <?php
-                if(isset($query))
-                {
-                    if ($query) {
-                    ?>
-                        <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
                     <?php
-                    } else {
+                    if (isset($query)) {
+                        if ($query) {
                     ?>
-                        <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                            <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
                     <?php
+                        }
                     }
-                }
                     ?>
                     <form method="post" enctype="multipart/form-data">
                         <div class="card radius-15">
@@ -205,11 +223,48 @@ if (isset($_GET['token'])) {
                                     if (isset($project_img)) {
                                         $counter = 0;
                                         foreach ($project_img as $file) {
-
+                                            $file_parts = pathinfo($file['img']);
                                     ?>
                                             <div class="col-md-2" id="file<?= $counter ?>">
                                                 <div class="col-md-8">
-                                                    <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                    <?php
+                                                    switch ($file_parts['extension']) {
+                                                        case "jpg":
+                                                    ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                        <?php
+                                                            break;
+                                                        case "jpeg":
+                                                        ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                        <?php
+                                                            break;
+                                                        case "png":
+                                                        ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                        <?php
+                                                            break;
+                                                        case "bmp":
+                                                        ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                        <?php
+                                                            break;
+                                                        case "JPG":
+                                                        ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                        <?php
+                                                            break;
+                                                        case "pdf":
+                                                        ?>
+                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/379099.png" width="120px" height="120px" /></a>
+                                                    <?php
+                                                            break;
+                                                    }
+
+
+                                                    ?>
+
+                                                    <!-- <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a> -->
                                                 </div>
                                                 <div class="col-md-1">
                                                     <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
@@ -247,14 +302,22 @@ if (isset($_GET['token'])) {
                                         <select id="prim_skills" name="employees[]" multiple>
                                             <?php
                                             if (isset($employee)) {
+
                                                 foreach ($employee as $e) {
+                                                    $selected = '';
+                                                    if (in_array($e['id'], $assignedEmp)) {
+                                                        $selected = 'selected';
+                                                    }
                                             ?>
 
-                                                    <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option>
-
+                                                    <option value="<?= $e['id'] ?>" <?= $selected ?>><?= $e['name'] ?></option>
                                             <?php
+
+
                                                 }
                                             }
+
+
                                             ?>
                                         </select>
 

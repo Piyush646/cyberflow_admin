@@ -28,6 +28,11 @@ if($res->num_rows > 0)
 <head>
 <style>
 
+
+.col-md-1
+{
+	margin-top:2vh !important;
+}
 .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
     border-color: #1fcecb !important;
 	box-shadow:0 0 0 0.05rem #1fcecb !important;

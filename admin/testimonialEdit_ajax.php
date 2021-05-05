@@ -1,5 +1,6 @@
 <?php
 require_once '../lib/core.php';
+
 if ( isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['eposition']) || isset(($_POST['edesc']))) {
     $result=[];
     $id = $_POST['eid'];

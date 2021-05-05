@@ -5,7 +5,7 @@ require_once 'left_navbar.php';
 
 //inserting
 if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['sort_order']) && isset($_POST['position'])) {
-    $name = $_POST['name'];
+    $name =$conn->real_escape_string($_POST['name']);
     $sort_order = $_POST['sort_order'];
     $position = $_POST['position'];
     $sql = "insert into team (name,position,sort_order) values ('$name','$position','$sort_order')";
