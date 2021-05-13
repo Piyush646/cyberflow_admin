@@ -102,7 +102,7 @@ if ($res->num_rows > 0) {
             </div>
             <div class="card">
 
-                <div class="card-body">
+                <div class="card-body" id="card-body">
                     <?php
                     if(isset($addWithImage))
                     {
@@ -294,7 +294,7 @@ if ($res->num_rows > 0) {
                 <div class="modal-footer">
 
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" onclick="editValues()" data-dismiss="modal" class="btn btn-primary" name="edit">Save changes</button>
+                    <button type="button" onclick="editValues()" data-dismiss="modal" class="btn btn-primary" name="edit">Save changes</button>
 
                 </div>
             </div>
@@ -355,7 +355,21 @@ require_once 'footer.php';
                         }, 4000);
                         
                     }
-                } else {
+                }
+
+                else if(obj.msg.trim() == "image_not_ok")
+                    {
+                         $("#name" + counter).html($("#validationCustom01").val());
+                        $("#position" + counter).html($("#validationCustom02").val());
+                        $("#sort_order" + counter).html($("#validationCustom03").val());
+                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                        setTimeout(function() {
+                            $(".alert").hide();
+                        }, 4000);
+                    }
+                    
+                    
+                  else {
                     $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request was declined !!</strong></div>`);
                     setTimeout(function() {
                         $(".alert").hide();

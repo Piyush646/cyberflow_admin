@@ -201,6 +201,7 @@ function upload_imageNcolumn($conn,$table,$id_col,$column,$id,$images,$columnArr
 	if(isset($_FILES[$images]))
     {
         $extension=array("jpeg","jpg","png","gif","pdf","PDF","JPG");
+        $files=[];
         foreach($_FILES[$images]["tmp_name"] as $key=>$tmp_name) 
         {
             $file_name=$_FILES[$images]["name"][$key];
@@ -224,7 +225,8 @@ function upload_imageNcolumn($conn,$table,$id_col,$column,$id,$images,$columnArr
                         $sql .= " where id='$insert_id'";
                         if($conn->query($sql))
                         {
-                              $status=true;
+                            array_push($files,$newFileName);
+                            $status=true;
                         }
                       
                     }
@@ -245,7 +247,7 @@ function upload_imageNcolumn($conn,$table,$id_col,$column,$id,$images,$columnArr
                 array_push($error,"$file_name, ");
             }
         }
-        return $status;
+        return $files;
     }
 }
 

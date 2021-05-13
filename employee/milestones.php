@@ -15,25 +15,22 @@ if ($res->num_rows > 0) {
     }
 }
 
-if(isset($milestoneIDS))
-{
-    foreach($milestoneIDS as $m)
-    {
-        $milestoneId=$m['m_id'];
-        $sql="select * from milestones where id='$milestoneId'";
-        $res= $conn->query($sql);
-        if($res->num_rows > 0)
-        {
-            $milestone[]=$res->fetch_assoc();
+if (isset($milestoneIDS)) {
+    foreach ($milestoneIDS as $m) {
+        $milestoneId = $m['m_id'];
+        $sql = "select * from milestones where id='$milestoneId'";
+        $res = $conn->query($sql);
+        if ($res->num_rows > 0) {
+            $milestone[] = $res->fetch_assoc();
         }
         $sql2 = "select * from milestone_files where m_id='$milestoneId'";
-$res2 = $conn->query($sql2);
-if ($res2->num_rows > 0) {
-    while ($row2 = $res2->fetch_assoc()) {
-        $m_files[] = $row2;
+        $res2 = $conn->query($sql2);
+        if ($res2->num_rows > 0) {
+            while ($row2 = $res2->fetch_assoc()) {
+                $m_files[] = $row2;
+            }
+        }
     }
-    }
-}
 }
 
 
@@ -105,7 +102,7 @@ if ($res2->num_rows > 0) {
                     </nav>
                 </div>
                 <div class="ml-auto">
-                    
+
                 </div>
             </div>
             <div class="card">
@@ -123,12 +120,12 @@ if ($res2->num_rows > 0) {
 
 
                                         <th scope="col">Description</th>
-                                        
-                                       
+
+
                                         <th scope="col">Excuses</th>
                                         <th scope="col">Comments</th>
                                         <th scope="col">Actions</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -188,62 +185,73 @@ if ($res2->num_rows > 0) {
 
                                                     ?>
                                                 </td>
-                                                
-                                                <td id="contact<?= $i ?>"><?=date("M-d-Y", $timestamp) ?></td>
+
+                                                <td id="contact<?= $i ?>"><?= date("M-d-Y", $timestamp) ?></td>
 
                                                 <td id="email<?= $i ?>"><?= $m['description'] ?></td>
-                                                
-                                                
+
+
                                                 <td id="excuse<?= $i ?>">
-                                                    <?php 
-                                                    if(isset($milestoneIDS))
-                                                    {
-                                                        foreach($milestoneIDS as $a)
-                                                        {
-                                                            if($m['id']==$a['m_id'])
-                                                            {
-                                                                if(!empty($a['excuse']))
-                                                                {
-                                                                ?>
-                                                                <?=$a['excuse']?>
-                                                                <?php
+                                                    <?php
+                                                    if (isset($milestoneIDS)) {
+                                                        foreach ($milestoneIDS as $a) {
+                                                            if ($m['id'] == $a['m_id']) {
+                                                                if (!empty($a['excuse'])) {
+                                                    ?>
+                                                                    <?= $a['excuse'] ?>
+                                                        <?php
                                                                 }
                                                             }
                                                         }
-                                                    
-                                                    ?>
+
+                                                        ?>
                                                 </td>
                                                 <td id="comments<?= $i ?>">
-                                                    <?php 
-                                                    if(isset($milestoneIDS))
-                                                    {
-                                                        foreach($milestoneIDS as $a)
-                                                        {
-                                                            if($m['id']==$a['m_id'])
-                                                            {
-                                                                if(!empty($a['comments']))
-                                                                {
-                                                                ?>
-                                                                <?=$a['comments']?>
-                                                                <?php
+                                                    <?php
+                                                        if (isset($milestoneIDS)) {
+                                                            foreach ($milestoneIDS as $a) {
+                                                                if ($m['id'] == $a['m_id']) {
+                                                                    if (!empty($a['comments'])) {
+                                                    ?>
+                                                                    <?= $a['comments'] ?>
+                                                    <?php
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
                                                     ?>
                                                 </td>
                                                 <form method="post">
                                                     <td><a type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</a>
-                                                       
+                                                        <?php
+                                                        if (isset($milestoneIDS)) {
+                                                            foreach ($milestoneIDS as $a) {
+                                                                if ($m['id'] == $a['m_id']) {
+                                                                    if($a['status']==3)
+                                                                    {
+                                                                        ?>
+                                                                        <button type="button"  class="btn btn-success m-1 px-2">Completed</button>
+                                                        <?php
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    ?>
+                                                                        <button type="button" id="complete<?=$i?>" onclick="milestoneCompleted(<?= $a['id'] ?>,'complete<?=$i?>')" class="btn btn-secondary m-1 px-2">Complete</button>
+                                                        <?php
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        ?>
                                                     </td>
                                                 </form>
                                             </tr>
-                                    <?php
-                                            $i++;
-                                        }
-                                    }
-                                }
-                                    ?>
+                                <?php
+                                                        $i++;
+                                                    }
+                                                }
+                                            }
+                                ?>
                                 </tbody>
                             </table>
                         </div>
@@ -275,7 +283,7 @@ if ($res2->num_rows > 0) {
                                     <textarea type="text" class="form-control" id="validationCustom01" name="excuses"></textarea>
                                     <div class="valid-feedback">Looks good!</div>
                                 </div>
-                                
+
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 mb-3">
@@ -288,7 +296,7 @@ if ($res2->num_rows > 0) {
                             </div>
                         </div>
                     </div>
-                    
+
 
 
 
@@ -296,7 +304,7 @@ if ($res2->num_rows > 0) {
                 <div class="modal-footer">
 
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" onclick="editValues()" data-dismiss="modal"  class="btn btn-primary" name="edit">Save changes</button>
+                    <button type="button" onclick="editValues()" data-dismiss="modal" class="btn btn-primary" name="edit">Save changes</button>
 
                 </div>
             </div>
@@ -355,7 +363,7 @@ require_once '../admin/footer.php';
             type: "POST",
             data: {
                 deleteId: id,
-                
+
             },
             success: function(data) {
 
@@ -374,15 +382,16 @@ require_once '../admin/footer.php';
     }
 
 
-    var counter=0;
-console.log(counter);
+    var counter = 0;
+    console.log(counter);
+
     function editSetValues(id, count) {
         $("#count").val(count);
         $("#eid").val(id);
         $("#validationCustom01").val($("#excuse" + count).html().trim());
-       
+
         $("#validationCustom03").val($("#comments" + count).html().trim());
-        
+
         counter = count;
     }
 
@@ -395,11 +404,11 @@ console.log(counter);
 
                 if (data.trim() == "ok") {
                     {
-                        $("#excuse"+ counter).html($("#validationCustom01").val());
-                        
-                        $("#comments"+ counter).html($("#validationCustom03").val());
-                        
-                        
+                        $("#excuse" + counter).html($("#validationCustom01").val());
+
+                        $("#comments" + counter).html($("#validationCustom03").val());
+
+
                     }
                 } else {
                     console.log(data);
@@ -412,5 +421,31 @@ console.log(counter);
         })
     }
 
-    
+    function milestoneCompleted(aID,btnId) {
+        if(confirm("Are you sure to mark as complete?"))
+        {
+            $.ajax({
+            url: "completed_milestone.php",
+            type: "POST",
+            data: {
+                assignedId: aID,
+            },
+            success: function(data) {
+
+                if (data.trim() == "ok") {
+                    $("#" + btnId).html("Completed");
+                    $("#" + btnId).attr("class","btn btn-success");
+
+
+                } else {
+                    console.log(data);
+                }
+            },
+            error: function() {
+
+            }
+        })
+        }
+        
+    }
 </script>

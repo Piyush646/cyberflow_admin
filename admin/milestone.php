@@ -34,14 +34,13 @@ if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) 
 }
 
 //fetching
-$employee2= [] ;
+$employee2 = [];
 $id = $_GET['token'];
 $sql = "select * from assigned_employees where project_id='$id'";
 $res = $conn->query($sql);
 if ($res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         array_push($employee2, $row['e_id']);
-        
     }
 }
 
@@ -51,7 +50,7 @@ $sql = "select * from assigned_employees where project_id='$id'";
 $res = $conn->query($sql);
 if ($res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
-         $employee[] = $row;
+        $employee[] = $row;
     }
 }
 
@@ -74,30 +73,26 @@ if (isset($employee)) {
 if (isset($_GET['token'])) {
     $id = $_GET['token'];
     $sql = "select m.*,mf.id as m_file_id,mf.img,am.e_id from milestones m left join milestone_files mf on m.id=mf.m_id,assigned_milestones am where  am.m_id=m.id and m.p_id='$id'";
-   if( $res = $conn->query($sql))
-   {
-
-   
-    if ($res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
-            $milestones[$row['id']]['title'] = $row['title'];
-            $milestones[$row['id']]['id'] = $row['id'];
-            $milestones[$row['id']]['description'] = $row['description'];
-            $milestones[$row['id']]['due_date'] = $row['due_date'];
-            $milestones[$row['id']]['p_id'] = $row['p_id'];
-            $milestones[$row['id']]['img'][$row['m_file_id']] = $row['img'];
-            $milestones[$row['id']]['emp'][$row['e_id']] = $row['e_id'];
+    if ($res = $conn->query($sql)) {
 
 
+        if ($res->num_rows > 0) {
+            while ($row = $res->fetch_assoc()) {
+                $milestones[$row['id']]['title'] = $row['title'];
+                $milestones[$row['id']]['status'] = $row['status'];
+                $milestones[$row['id']]['id'] = $row['id'];
+                $milestones[$row['id']]['description'] = $row['description'];
+                $milestones[$row['id']]['due_date'] = $row['due_date'];
+                $milestones[$row['id']]['p_id'] = $row['p_id'];
+                $milestones[$row['id']]['img'][$row['m_file_id']] = $row['img'];
+                $milestones[$row['id']]['emp'][$row['e_id']] = $row['e_id'];
+            }
+        } else {
+            echo "pancm";
         }
-        
-    }else{
-        echo "pancham";
+    } else {
+        echo $conn->error;
     }
-}else
-{
-    echo $conn->error;
-}
 }
 print_r($milestones);
 
@@ -110,16 +105,14 @@ if (isset($milestones)) {
             while ($row2 = $res2->fetch_assoc()) {
                 $m_files[] = $row2;
             }
-
-            
         }
         $sql3 = "select * from assigned_milestones where m_id='$m_id'";
-            $res3 = $conn->query($sql3);
-            if ($res3->num_rows > 0) {
-                while ($row3 = $res3->fetch_assoc()) {
-                    $assigned_milestones[] = $row3;
-                }
+        $res3 = $conn->query($sql3);
+        if ($res3->num_rows > 0) {
+            while ($row3 = $res3->fetch_assoc()) {
+                $assigned_milestones[] = $row3;
             }
+        }
     }
 }
 
@@ -151,7 +144,7 @@ if (isset($milestones)) {
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" id="card-body">
                     <div>
                         <hr />
                         <div class="table-responsive">
@@ -167,6 +160,7 @@ if (isset($milestones)) {
                                         <th scope="col">Description</th>
                                         <th scope="col">Assigned To</th>
                                         <th scope="col">Actions</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Excuses</th>
                                         <th scope="col">Comments</th>
 
@@ -183,7 +177,7 @@ if (isset($milestones)) {
                                             <tr id="tr<?= $i ?>">
                                                 <!-- <th scope="row"><?= $i ?></th> -->
                                                 <td id="title<?= $i ?>"><?= $m['title'] ?></td>
-                                                <td >
+                                                <td>
                                                     <?php
                                                     if (isset($m_files)) {
                                                         foreach ($m_files as $p) {
@@ -193,16 +187,16 @@ if (isset($milestones)) {
 
                                                                 switch ($file_parts['extension']) {
                                                                     case "pdf":
-                                                                    ?>
-                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img  src="./uploads/379099.png ?>" width="33px" height="33px" /></a>
-                                                                        <input class="filess<?= $i ?>" type="hidden" value="<?=$p['img'] ?>"></input>
+                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/379099.png ?>" width="33px" height="33px" /></a>
+                                                                        <input class="filess<?= $i ?>" type="hidden" value="<?= $p['img'] ?>" data-file-id="<?= $p['id'] ?>"></input>
                                                                     <?php
                                                                         break;
-                                                                        default:
-                                                                        ?>
-                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img  src="./uploads/image.png ?>" width="33px" height="33px" /></a>
-                                                                        <input class="filess<?= $i ?>" type="hidden" value="<?=$p['img'] ?>"></input>
-                                                                        <?php
+                                                                    default:
+                                                                    ?>
+                                                                        <a href=" ./uploads/<?= $p['img'] ?>" target="_blank"><img src="./uploads/image.png ?>" width="33px" height="33px" /></a>
+                                                                        <input class="filess<?= $i ?>" type="hidden" value="<?= $p['img'] ?>" data-file-id="<?= $p['id'] ?>"></input>
+                                                    <?php
 
                                                                 }
                                                             }
@@ -214,7 +208,7 @@ if (isset($milestones)) {
                                                 </td>
 
                                                 <td id="due_date<?= $i ?>"><?= date("M-d-Y", $timestamp) ?></td>
-                                                <input id="due_date2<?= $i ?>" type="hidden" value="<?=$m['due_date'] ?>"></input>
+                                                <input id="due_date2<?= $i ?>" type="hidden" value="<?= $m['due_date'] ?>"></input>
                                                 <td id="description<?= $i ?>"><?= $m['description'] ?></td>
                                                 <td>
                                                     <?php
@@ -241,7 +235,91 @@ if (isset($milestones)) {
                                                     <form method="post">
                                                         <button type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</button>
                                                         <button type="button" class="btn btn-danger m-1 px-2" onclick="deleteMilestone(<?= $m['id'] ?>,'tr<?= $i ?>')">Delete</button>
+                                                        <?php
+                                                            $pipeline='Pipeline';
+                                                            $active='Active';
+                                                            $hold='Hold';
+                                                            $delayed='Delayed';
+                                                            $complete='Complete';
+                                                            $revision='Revision';
+                                                            $mid=$m['id'];
+
+                                                            $onclickPipe="pipeline( $mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                            $onclickActiv="active($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                            $onclickHold="hold($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                            $onclickDelayed="delayed($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                            $onclickComplete="complete($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                            $onclickRev="revision($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                    
+                                                            switch($m['status'])
+                                                            {
+                                                            case 0:
+                                                                $pipeline='In pipeline';
+                                                                $onclickPipe="";
+                                                                break;
+                                                            case 1:
+                                                                $active='Activated';
+                                                                $onclickActiv="";
+                                                                break;
+                                                            case 2:
+                                                                $hold='On hold';
+                                                                $onclickHold="";
+                                                                break;
+                                                            case 3:
+                                                                $delayed='Has delayed';
+                                                                $onclickDelayed="";
+                                                                break;
+                                                            case 4:
+                                                                $complete='Completed';
+                                                                $onclickComplete="";
+                                                                break;
+                                                            case 5:
+                                                                $revision='Revision sent';
+                                                                $onclickRev="";
+                                                                break;
+                                                            }
+                                                            
+                                                        ?>
+                                                                <button type="button" id="b1<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?=$onclickPipe?>" ><?=$pipeline?></button>
+                                                                <button type="button" id="b2<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?=$onclickActiv?>" ><?=$active?></button>
+                                                                <button type="button" id="b3<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?=$onclickHold?>" ><?=$hold?></button>
+                                                                <button type="button" id="b4<?= $i ?>" class="btn btn-warning m-1 px-1" onclick="<?=$onclickDelayed?>"><?=$delayed?></button>
+                                                                <button type="button" id="b5<?= $i ?>" class="btn btn-secondary m-1 px-1" onclick="<?=$onclickComplete?>" ><?=$complete?></button>
+                                                                <button type="button" id="b6<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?=$onclickRev?>" ><?=$revision?></button>
+                                                            <?php
+                                                        
+                                                            
+                                                        
+
+                                                        ?>
                                                     </form>
+                                                </td>
+
+
+                                                <td>
+                                                    <?php
+                                                    if (isset($assigned_milestones)) {
+                                                        foreach ($assigned_milestones as $a) {
+                                                            if ($m['id'] == $a['m_id']) {
+                                                                $eid = $a['e_id'];
+                                                                $sql = "select * from employee where id='$eid'";
+                                                                $res = $conn->query($sql);
+                                                                if ($res->num_rows > 0) {
+                                                                    $ename = $res->fetch_assoc();
+                                                                }
+                                                                if (($a['status'] == 3)) {
+                                                    ?>
+                                                                    <p><?= $ename['name'] ?> : Completed<br></p>
+                                                                <?php
+                                                                } else {
+                                                                ?>
+                                                                    <p><?= $ename['name'] ?> : Not Completed<br></p>
+                                                    <?php
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
                                                 </td>
 
 
@@ -289,12 +367,16 @@ if (isset($milestones)) {
                                                 </td>
 
 
+
+
                                             </tr>
                                 <?php
                                                         $i++;
                                                     }
                                                 }
                                             }
+                                            
+                                            
                                 ?>
                                 </tbody>
                             </table>
@@ -464,27 +546,19 @@ if (isset($milestones)) {
                                 </div>
                             </div>
                             <hr />
-                            <div class="row" style="margin-bottom:20px">
+                            <div class="row" id="row1" style="margin-bottom:20px">
 
                                 <?php
                                 // if (isset($project_img)) {
-                                $counter = 0;
+                                //$counter = 0;
                                 // foreach ($project_img as $file) {
 
                                 ?>
-                                <div class="col-md-2" id="file<?= $counter ?>">
-                                    <div class="col-md-8">
-                                        <div class="row" id="row1">
-
-                                        </div>
-                                        <!-- <a href="./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a> -->
-                                    </div>
-                                    <!-- <div class="col-md-1">
-                                        <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
-                                    </div> -->
-                                </div>
+                                <!-- <div class="col-md-2" id="file<?= $counter ?>">
+                                    
+                                </div> -->
                                 <?php
-                                $counter++;
+                                //$counter++;
                                 //     }
                                 // }
 
@@ -512,16 +586,16 @@ if (isset($milestones)) {
                                             Assign To:
                                         </label>
 
-                                        <select id="prim_skills2" name="employees[]" multiple>
+                                        <select id="prim_skills2" name="employees2[]" multiple>
                                             <?php
                                             //if (isset($employeeName)) {
-                                                //foreach ($employeeName as $e) {
+                                            //foreach ($employeeName as $e) {
                                             ?>
 
-                                                    <!-- <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option> -->
+                                            <!-- <option value="<?= $e['id'] ?>"><?= $e['name'] ?></option> -->
 
                                             <?php
-                                                //}
+                                            //}
                                             //}
                                             ?>
                                             <?php
@@ -558,7 +632,7 @@ if (isset($milestones)) {
                     <div class="modal-footer">
 
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" name="edit">Save changes</button>
+                        <button type="button" onclick="editValues(<?= $_GET['token'] ?>)" data-dismiss="modal" class="btn btn-primary" name="edit">Save changes</button>
 
 
                     </div>
@@ -615,13 +689,14 @@ require_once 'footer.php';
 
         var inhtml = `<div class="row" style="margin-top:20px" >    
                             <div class="col-md-10">
-                                <input   type="file" id='projectfile${coun2}' name="projectFile[]" class="form-control"/>
+                                <input   type="file" class="milestonefile" id='projectfile${coun2}' name="projectFile[]" class="form-control"/>
                             </div> 
                             <div class="col-md-2">
                                 <button type="button" class="btn btn-danger" onclick="removeField('projectfile${coun2}')"><i class="fadeIn animated bx bx-trash"></i></button>
                             </div> 
                         </div>`;
         $("#filesDiv3").append(inhtml);
+
         coun2++;
 
     }
@@ -634,7 +709,7 @@ require_once 'footer.php';
 
     function deleteFile(id, divId) {
         $.ajax({
-            url: "del_ajaxFiles.php",
+            url: "del_milestonesFiles.php",
             type: "POST",
             data: {
                 deleteId: id,
@@ -661,20 +736,104 @@ require_once 'footer.php';
         $("#eid").val(id);
 
         $("#validationCustom01").val($("#title" + count).html());
-    
+
         $("#validationCustom02").val($("#due_date2" + count).val());
         $("#validationCustom03").val($("#description" + count).html());
-        $(".filess"+count).each(function()
-        {
-            console.log(this);
-            var inhtml=`<div class="col-3"><a style="display:inline;" href="./uploads/${$(this).val()}" target="_blank"><img src="./uploads/${$(this).val()}" width="120px" height="120px" /></a></div>
+        $(".filess" + count).each(function() {
+            let extension = $(this).val().split('.').pop();
+            // console.log(extension);
+            // console.log(this);
+            var file_id = $(this).attr('data-file-id');
+            var counter2 = 0;
+            if (extension == 'pdf') {
+                var inhtml =
+                    `<div class="col-md-3" style="margin-right:1.5vw;"id="file${counter2}"><div class="col-md-8">
+            <a  href="./uploads/${$(this).val()}" target="_blank"><img src="./uploads/379099.png" width="120px" height="120px" /></a>
+            </div>
             <div class="col-md-1">
-                                        <button type="button" class="btn btn-danger" onclick="deleteFile(<?= $file['id'] ?>,'file<?= $counter ?>','./uploads/<?= $file['img'] ?>')"><i class="fadeIn animated bx bx-trash"></i></button>
-                                    </div>`;
+            <button type="button" class="btn btn-danger" onclick="deleteFile(${file_id},'file${counter2}','./uploads/${$(this).val()}')"><i class="fadeIn animated bx bx-trash"></i></button>
+             </div>
+             </div>`;
+            } else {
+                var inhtml = `
+            <div class="col-md-3" style="margin-right:1.5vw;"id="file${counter2}"><div class="col-md-8">
+            <a  href="./uploads/${$(this).val()}" target="_blank"><img src="./uploads/${$(this).val()}" width="120px" height="120px" /></a>
+            </div>
+            <div class="col-md-1">
+            <button type="button" class="btn btn-danger" onclick="deleteFile(${file_id},'file${counter2}','./uploads/${$(this).val()}')"><i class="fadeIn animated bx bx-trash"></i></button>
+             </div>
+             
+             </div>`
+            }
+            counter2++;
             $('#row1').append(inhtml);
         });
         counter = count;
-        
+
+    }
+
+
+    function editValues(pId) {
+        console.log(counter)
+        var fd = new FormData();
+
+        // fd.append('files', $("#fancy-file-upload2")[0].files[0]);
+        // fd.append('projectfile', $("#projectFile")[0].files[0]);
+        $(".milestonefile").each(function() {
+
+            fd.append('projectFile[]', $(this)[0].files[0]);
+        })
+        fd.append('eid', $("#eid").val());
+        fd.append('title', $("#validationCustom01").val());
+        fd.append('due_date', $("#validationCustom02").val());
+        fd.append('description', $("#validationCustom03").val());
+        fd.append('prjectId',pId)
+        // fd.append('employees', $("#prim_skills2"));
+        console.log($(".milestonefile"))
+        $.ajax({
+            url: "milestoneEdit_ajax.php",
+            type: "POST",
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                var obj = JSON.parse(data)
+                if (obj.msg.trim() == "ok") {
+                    {
+                        $("#name" + counter).html($("#validationCustom01").val());
+                        $("#position" + counter).html($("#validationCustom02").val());
+                        $("#sort_order" + counter).html($("#validationCustom03").val());
+                        console.log(obj.image)
+                        // $("#imagesrc" + counter).attr("src", obj.image);
+                        // $("#imagehref" + counter).attr("href", obj.image);
+                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                        setTimeout(function() {
+                            $(".alert").hide();
+                        }, 4000);
+
+                    }
+                } else if (obj.msg.trim() == "image_not_ok") {
+                    $("#title" + counter).html($("#validationCustom01").val());
+                    $("#due_date" + counter).html($("#validationCustom02").val());
+                    $("#description" + counter).html($("#validationCustom03").val());
+                    $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
+                } else {
+                    $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request was declined !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
+
+                    console.log(obj);
+                }
+            },
+            error: function() {
+
+            }
+
+        })
     }
 
     function deleteMilestone(id, trId) {
@@ -701,5 +860,237 @@ require_once 'footer.php';
             }
 
         })
+    }
+
+
+    function pipeline(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as In pipeline?")) 
+        {
+            $.ajax({
+                url: "pipeline_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html(" In pipeline");
+                        // $("#" + pipe).attr("onclick", "");
+                        // $("#" + pipe).attr("class", "btn btn-success");
+                        $("#" + activ).html("Active");
+                        
+
+                        $("#" + hol).html("Hold");
+                        $("#" + delay).html("Delayed");
+                        $("#" + complet).html("Complete");
+                        $("#" + rev).html("Revision");
+
+                       
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
+    }
+
+    function active(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as active?") )
+        {
+            $.ajax({
+                url: "active_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html("Pipeline");
+                        $("#" + activ).html("Activated");
+                        // $("#" + activ).attr("onclick", "");
+                        // $("#" + activ).attr("class", "btn btn-success");
+
+                        $("#" + hol).html("Hold");
+                        $("#" + delay).html("Delayed");
+                        $("#" + complet).html("Complete");
+                        $("#" + rev).html("Revision");
+
+                        
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
+    }
+
+
+    function hold(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as on hold?") )
+        {
+            $.ajax({
+                url: "onhold_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html("Pipeline");
+                        $("#" + activ).html("Active");
+                        
+
+                        $("#" + hol).html("On hold");
+                        // $("#" + hol).attr("onclick", "");
+                        // $("#" + hol).attr("class", "btn btn-success");
+                        $("#" + delay).html("Delayed");
+                        $("#" + complet).html("Complete");
+                        $("#" + rev).html("Revision");
+
+                        
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
+    }
+
+    function delayed(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as has delayed?") )
+        {
+            $.ajax({
+                url: "hasdelayed_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html("Pipeline");
+                        $("#" + activ).html("Active");
+                        
+
+                        $("#" + hol).html("Hold");
+                        // $("#" + hol).attr("onclick", "");
+                        
+                        $("#" + delay).html("Has delayed");
+                        // $("#" + delay).attr("class", "btn btn-success");
+                        $("#" + complet).html("Complete");
+                        $("#" + rev).html("Revision");
+
+                        
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
+    }
+
+    function complete(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as completed?") )
+        {
+            $.ajax({
+                url: "completedd_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html("Pipeline");
+                        $("#" + activ).html("Active");
+                        
+
+                        $("#" + hol).html("Hold");
+                        // $("#" + hol).attr("onclick", "");
+                        
+                        $("#" + delay).html("delayed");
+                        // $("#" + delay).attr("class", "btn btn-success");
+                        $("#" + complet).html("Completed");
+                        $("#" + rev).html("Revision");
+
+                        
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
+    }
+
+    function revision(mID, pipe, activ, hol, delay, complet, rev) {
+        if(confirm("Are you sure to mark as revision sent?") )
+        {
+            $.ajax({
+                url: "revision_milestone.php",
+                type: "POST",
+                data: {
+                    milestoneId: mID,
+                },
+                success: function(data) {
+
+                    if (data.trim() == "ok") {
+                        $("#" + pipe).html("Pipeline");
+                        $("#" + activ).html("Active");
+                        
+
+                        $("#" + hol).html("Hold");
+                        // $("#" + hol).attr("onclick", "");
+                        
+                        $("#" + delay).html("delayed");
+                        // $("#" + delay).attr("class", "btn btn-success");
+                        $("#" + complet).html("Complete");
+                        $("#" + rev).html("Revision sent");
+
+                        
+
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function() {
+
+                }
+            })
+        }
+
     }
 </script>

@@ -18,12 +18,15 @@ if (isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['epos
             $result['msg']= "ok";
             $result['image']='./uploads/'.$image;
         
-    } else {
-       
-        $result['msg']= "not ok";
-    }}
+        } 
+        else
+        {
+        
+            $result['msg']= "image_not_ok";
+        }
+    }
         else { 
-        $result['msg']= "not  very ok";
+        $result['msg']= "not_very_ok";
     }
 
     echo json_encode($result);
