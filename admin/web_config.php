@@ -5,13 +5,13 @@ require_once 'left_navbar.php';
 
 //editing
 if (isset($_POST['edit'])) {
-    $title = $_POST['title'];
-    $contact = $_POST['phn'];
-    $address = $_POST['address'];
-    $fb = $_POST['fb'];
-    $twi = $_POST['twi'];
-    $insta = $_POST['insta'];
-    $linkedin = $_POST['linkedin'];
+    $title = $conn->real_escape_string($_POST['title']);
+    $contact = $conn->real_escape_string($_POST['phn']);
+    $address = $conn->real_escape_string($_POST['address']);
+    $fb = $conn->real_escape_string($_POST['fb']);
+    $twi = $conn->real_escape_string($_POST['twi']);
+    $insta = $conn->real_escape_string($_POST['insta']);
+    $linkedin = $conn->real_escape_string($_POST['linkedin']);
     $sql = "update web_config set title='$title',phn='$contact',address='$address',facebook='$fb',twitter='$twi',instagram='$insta',linkedin='$linkedin'";
     if ($conn->query($sql) == true) {
         $sql = "select id from web_config";
@@ -23,10 +23,10 @@ if (isset($_POST['edit'])) {
             if (upload_imageUpdate($conn, "web_config", "logo", 'id', $id['id'], "files")) {
                 $editquery = true;
             } else {
-                $editquery = false;
+                $noquery = true;
             }
         } else {
-            echo $conn->error;
+            $no=true;
         }
     }
 }
@@ -69,7 +69,22 @@ if ($res->num_rows > 0) {
                     ?>
                         <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
                     <?php
-                    } else {
+                    }
+                 }
+
+                 if(isset($noquery))
+                {
+                    if ($noquery) {
+                    ?>
+                        <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                    <?php
+                    }
+                 }
+
+                  if(isset($no)) 
+                 {
+                     if($no)
+                     {
                     ?>
                         <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
                     <?php

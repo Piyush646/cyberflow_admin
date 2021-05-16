@@ -6,9 +6,9 @@ require_once 'left_navbar.php';
 //inserting
 
 if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) && isset($_POST['description']) && isset($_GET['token'])) {
-    $title = $_POST['title'];
-    $due_date = $_POST['due_date'];
-    $description = $_POST['description'];
+    $title = $conn->real_escape_string($_POST['title']);
+    $due_date = $conn->real_escape_string($_POST['due_date']);
+    $description = $conn->real_escape_string($_POST['description']);
     $id = $_GET['token'];
     echo $sql = "insert into milestones(title,due_date,description,p_id) values ('$title','$due_date','$description','$id')";
     if ($conn->query($sql)) {
@@ -18,7 +18,7 @@ if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) 
         if (upload_imageNcolumn($conn, "milestone_files", "m_id", 'img', $id, "projectFile", $projectArr)) {
             $query = true;
         } else {
-            $query = false;
+            $query = true;
         }
         $employees = $_POST['employees'];
         $sql = "insert into assigned_milestones(e_id,m_id,p_id) values";
@@ -29,7 +29,7 @@ if (isset($_POST['add']) && isset($_POST['title']) && isset($_POST['due_date']) 
         $sql = rtrim($sql, ",");
         $conn->query($sql);
     } else {
-        echo $conn->error;
+        $query = false;
     }
 }
 
@@ -94,7 +94,7 @@ if (isset($_GET['token'])) {
         echo $conn->error;
     }
 }
-print_r($milestones);
+// print_r($milestones);
 
 if (isset($milestones)) {
     foreach ($milestones as $m) {
@@ -145,6 +145,19 @@ if (isset($milestones)) {
             </div>
             <div class="card">
                 <div class="card-body" id="card-body">
+                    <?php
+                    if (isset($query)) {
+                        if ($query) {
+                    ?>
+                            <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                    <?php
+                        }
+                    }
+                    ?>
                     <div>
                         <hr />
                         <div class="table-responsive">
@@ -236,60 +249,59 @@ if (isset($milestones)) {
                                                         <button type="button" data-toggle="modal" data-target="#exampleModal6" class="btn btn-success m-1 px-2" onclick="editSetValues(<?= $m['id'] ?>,<?= $i ?>)">Edit</button>
                                                         <button type="button" class="btn btn-danger m-1 px-2" onclick="deleteMilestone(<?= $m['id'] ?>,'tr<?= $i ?>')">Delete</button>
                                                         <?php
-                                                            $pipeline='Pipeline';
-                                                            $active='Active';
-                                                            $hold='Hold';
-                                                            $delayed='Delayed';
-                                                            $complete='Complete';
-                                                            $revision='Revision';
-                                                            $mid=$m['id'];
+                                                        $pipeline = 'Pipeline';
+                                                        $active = 'Active';
+                                                        $hold = 'Hold';
+                                                        $delayed = 'Delayed';
+                                                        $complete = 'Complete';
+                                                        $revision = 'Revision';
+                                                        $mid = $m['id'];
 
-                                                            $onclickPipe="pipeline( $mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                                            $onclickActiv="active($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                                            $onclickHold="hold($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                                            $onclickDelayed="delayed($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                                            $onclickComplete="complete($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                                            $onclickRev="revision($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
-                                    
-                                                            switch($m['status'])
-                                                            {
+                                                        $onclickPipe = "pipeline( $mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                        $onclickActiv = "active($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                        $onclickHold = "hold($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                        $onclickDelayed = "delayed($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                        $onclickComplete = "complete($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+                                                        $onclickRev = "revision($mid,'b1$i','b2$i','b3$i','b4$i','b5$i','b6$i')";
+
+                                                        switch ($m['status']) {
                                                             case 0:
-                                                                $pipeline='In pipeline';
-                                                                $onclickPipe="";
+                                                                $pipeline = 'In pipeline';
+                                                                $onclickPipe = "";
                                                                 break;
                                                             case 1:
-                                                                $active='Activated';
-                                                                $onclickActiv="";
+                                                                $active = 'Activated';
+                                                                $onclickActiv = "";
                                                                 break;
                                                             case 2:
-                                                                $hold='On hold';
-                                                                $onclickHold="";
+                                                                $hold = 'On hold';
+                                                                $onclickHold = "";
                                                                 break;
                                                             case 3:
-                                                                $delayed='Has delayed';
-                                                                $onclickDelayed="";
+                                                                $delayed = 'Has delayed';
+                                                                $onclickDelayed = "";
                                                                 break;
                                                             case 4:
-                                                                $complete='Completed';
-                                                                $onclickComplete="";
+                                                                $complete = 'Completed';
+                                                                $onclickComplete = "";
                                                                 break;
                                                             case 5:
-                                                                $revision='Revision sent';
-                                                                $onclickRev="";
+                                                                $revision = 'Revision sent';
+                                                                $onclickRev = "";
                                                                 break;
-                                                            }
-                                                            
+                                                        }
+
                                                         ?>
-                                                                <button type="button" id="b1<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?=$onclickPipe?>" ><?=$pipeline?></button>
-                                                                <button type="button" id="b2<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?=$onclickActiv?>" ><?=$active?></button>
-                                                                <button type="button" id="b3<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?=$onclickHold?>" ><?=$hold?></button>
-                                                                <button type="button" id="b4<?= $i ?>" class="btn btn-warning m-1 px-1" onclick="<?=$onclickDelayed?>"><?=$delayed?></button>
-                                                                <button type="button" id="b5<?= $i ?>" class="btn btn-secondary m-1 px-1" onclick="<?=$onclickComplete?>" ><?=$complete?></button>
-                                                                <button type="button" id="b6<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?=$onclickRev?>" ><?=$revision?></button>
-                                                            <?php
-                                                        
-                                                            
-                                                        
+                                                        <button type="button" id="b1<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?= $onclickPipe ?>"><?= $pipeline ?></button>
+                                                        <button type="button" id="b2<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?= $onclickActiv ?>"><?= $active ?></button>
+                                                        <button type="button" id="b3<?= $i ?>" class="btn btn-info m-1 px-1" onclick="<?= $onclickHold ?>"><?= $hold ?></button>
+                                                        <button type="button" id="b4<?= $i ?>" class="btn btn-warning m-1 px-1" onclick="<?= $onclickDelayed ?>"><?= $delayed ?></button>
+                                                        <button type="button" id="b5<?= $i ?>" class="btn btn-secondary m-1 px-1" onclick="<?= $onclickComplete ?>"><?= $complete ?></button>
+                                                        <button type="button" id="b6<?= $i ?>" class="btn btn-danger m-1 px-1" onclick="<?= $onclickRev ?>"><?= $revision ?></button>
+                                                        <?php
+
+
+
 
                                                         ?>
                                                     </form>
@@ -375,8 +387,8 @@ if (isset($milestones)) {
                                                     }
                                                 }
                                             }
-                                            
-                                            
+
+
                                 ?>
                                 </tbody>
                             </table>
@@ -787,7 +799,7 @@ require_once 'footer.php';
         fd.append('title', $("#validationCustom01").val());
         fd.append('due_date', $("#validationCustom02").val());
         fd.append('description', $("#validationCustom03").val());
-        fd.append('prjectId',pId)
+        fd.append('prjectId', pId)
         // fd.append('employees', $("#prim_skills2"));
         console.log($(".milestonefile"))
         $.ajax({
@@ -864,8 +876,7 @@ require_once 'footer.php';
 
 
     function pipeline(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as In pipeline?")) 
-        {
+        if (confirm("Are you sure to mark as In pipeline?")) {
             $.ajax({
                 url: "pipeline_milestone.php",
                 type: "POST",
@@ -879,14 +890,14 @@ require_once 'footer.php';
                         // $("#" + pipe).attr("onclick", "");
                         // $("#" + pipe).attr("class", "btn btn-success");
                         $("#" + activ).html("Active");
-                        
+
 
                         $("#" + hol).html("Hold");
                         $("#" + delay).html("Delayed");
                         $("#" + complet).html("Complete");
                         $("#" + rev).html("Revision");
 
-                       
+
 
 
                     } else {
@@ -902,8 +913,7 @@ require_once 'footer.php';
     }
 
     function active(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as active?") )
-        {
+        if (confirm("Are you sure to mark as active?")) {
             $.ajax({
                 url: "active_milestone.php",
                 type: "POST",
@@ -923,7 +933,7 @@ require_once 'footer.php';
                         $("#" + complet).html("Complete");
                         $("#" + rev).html("Revision");
 
-                        
+
 
 
                     } else {
@@ -940,8 +950,7 @@ require_once 'footer.php';
 
 
     function hold(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as on hold?") )
-        {
+        if (confirm("Are you sure to mark as on hold?")) {
             $.ajax({
                 url: "onhold_milestone.php",
                 type: "POST",
@@ -953,7 +962,7 @@ require_once 'footer.php';
                     if (data.trim() == "ok") {
                         $("#" + pipe).html("Pipeline");
                         $("#" + activ).html("Active");
-                        
+
 
                         $("#" + hol).html("On hold");
                         // $("#" + hol).attr("onclick", "");
@@ -962,7 +971,7 @@ require_once 'footer.php';
                         $("#" + complet).html("Complete");
                         $("#" + rev).html("Revision");
 
-                        
+
 
 
                     } else {
@@ -978,8 +987,7 @@ require_once 'footer.php';
     }
 
     function delayed(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as has delayed?") )
-        {
+        if (confirm("Are you sure to mark as has delayed?")) {
             $.ajax({
                 url: "hasdelayed_milestone.php",
                 type: "POST",
@@ -991,17 +999,17 @@ require_once 'footer.php';
                     if (data.trim() == "ok") {
                         $("#" + pipe).html("Pipeline");
                         $("#" + activ).html("Active");
-                        
+
 
                         $("#" + hol).html("Hold");
                         // $("#" + hol).attr("onclick", "");
-                        
+
                         $("#" + delay).html("Has delayed");
                         // $("#" + delay).attr("class", "btn btn-success");
                         $("#" + complet).html("Complete");
                         $("#" + rev).html("Revision");
 
-                        
+
 
 
                     } else {
@@ -1017,8 +1025,7 @@ require_once 'footer.php';
     }
 
     function complete(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as completed?") )
-        {
+        if (confirm("Are you sure to mark as completed?")) {
             $.ajax({
                 url: "completedd_milestone.php",
                 type: "POST",
@@ -1030,17 +1037,17 @@ require_once 'footer.php';
                     if (data.trim() == "ok") {
                         $("#" + pipe).html("Pipeline");
                         $("#" + activ).html("Active");
-                        
+
 
                         $("#" + hol).html("Hold");
                         // $("#" + hol).attr("onclick", "");
-                        
+
                         $("#" + delay).html("delayed");
                         // $("#" + delay).attr("class", "btn btn-success");
                         $("#" + complet).html("Completed");
                         $("#" + rev).html("Revision");
 
-                        
+
 
 
                     } else {
@@ -1056,8 +1063,7 @@ require_once 'footer.php';
     }
 
     function revision(mID, pipe, activ, hol, delay, complet, rev) {
-        if(confirm("Are you sure to mark as revision sent?") )
-        {
+        if (confirm("Are you sure to mark as revision sent?")) {
             $.ajax({
                 url: "revision_milestone.php",
                 type: "POST",
@@ -1069,17 +1075,17 @@ require_once 'footer.php';
                     if (data.trim() == "ok") {
                         $("#" + pipe).html("Pipeline");
                         $("#" + activ).html("Active");
-                        
+
 
                         $("#" + hol).html("Hold");
                         // $("#" + hol).attr("onclick", "");
-                        
+
                         $("#" + delay).html("delayed");
                         // $("#" + delay).attr("class", "btn btn-success");
                         $("#" + complet).html("Complete");
                         $("#" + rev).html("Revision sent");
 
-                        
+
 
 
                     } else {
@@ -1093,4 +1099,7 @@ require_once 'footer.php';
         }
 
     }
+    setTimeout(function() {
+        $(".alert").hide();
+    }, 4000);
 </script>

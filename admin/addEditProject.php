@@ -14,16 +14,16 @@ if ($res->num_rows > 0) {
 }
 //inserting
 if (isset($_POST['add'])) {
-    $name = $_POST['name'];
-    $due_date = $_POST['due_date'];
-    $description = $_POST['description'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $due_date = $conn->real_escape_string($_POST['due_date']);
+    $description = $conn->real_escape_string($_POST['description']);
     $sql = "insert into assign_project(name,due_date,description) values('$name','$due_date','$description')";
     if ($conn->query($sql)) {
         $id = $conn->insert_id;
         if (upload_imagesInsert($conn, "project_files", "p_id", 'img', $id, "projectFile")) {
             $query = true;
         } else {
-            $query = false;
+            $query = true;
         }
         $employees = $_POST['employees'];
         $sql = "insert into assigned_employees(e_id,project_id) values";
@@ -34,46 +34,45 @@ if (isset($_POST['add'])) {
         $sql = rtrim($sql, ",");
         $conn->query($sql);
     } else {
-        echo $conn->error;
+        $query = false;
     }
 }
 //editing
 if (isset($_POST['edit'])) {
     $id = $_GET['token'];
-    $name = $_POST['name'];
-    $due_date = $_POST['due_date'];
-    $description = $_POST['description'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $due_date = $conn->real_escape_string($_POST['due_date']);
+    $description = $conn->real_escape_string($_POST['description']);
     $sql = "update assign_project set name='$name',due_date='$due_date',description='$description' where id='$id'";
     if ($conn->query($sql)) {
         $id = $_GET['token'];
         if (upload_imagesInsert($conn, "project_files", 'p_id', 'img', $id, "projectFile")) {
-            $query = true;
+            $image = true;
         } else {
-            $query = false;
+            $image = true;
         }
-
-        $sql = "delete from assigned_milestones where p_id='$id'";
-        if($conn->query($sql))
-        {
-        $sql = "delete from assigned_employees where project_id='$id'";
+        echo $sql = "delete from assigned_employees where project_id='$id'";
         if ($conn->query($sql)) {
-            $employees = $_POST['employees'];
-            echo $sql = "insert into assigned_employees(e_id,project_id) values";
-            foreach ($employees as $emp) {
-                $sql .= "('$emp','$id'),";
-            }
-            $sql = rtrim($sql, ",");
+            $sql = "delete from assigned_milestones where p_id='$id'";
             $conn->query($sql);
+             $sql2 = "delete from milestones where p_id='$id'";
+            $conn->query($sql2);
+             $sql3 = "delete from milestone_files where p_id='$id'";
+            if ($conn->query($sql3)) {
+                $employees = $_POST['employees'];
+                 $sql = "insert into assigned_employees(e_id,project_id) values";
+                foreach ($employees as $emp) {
+                     $sql .= "('$emp','$id'),";
+                }
+                $sql = rtrim($sql, ",");
+                $conn->query($sql);
+            }
         }
-    }
-
-        //  else {
-        //     $query2 = false;
+    } else {
+        $no = true;
     }
 }
-// } else {
-//     echo $conn->error;
-// }
+// } 
 
 
 //fetching
@@ -159,7 +158,27 @@ if (isset($_GET['token'])) {
                     ?>
                             <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
                         <?php
-                        } else {
+                        }
+                    } 
+                    if(isset($query)){
+                        if(!$query){
+                        ?>
+                        <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                        <?php
+                    }
+                }
+
+                    if (isset($image)) {
+                        if ($image) {
+                        ?>
+                            <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                        <?php
+                        }
+                    }
+                    
+                    if (isset($no)) {
+                        if ($no) {
+
                         ?>
                             <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
                     <?php
@@ -229,36 +248,17 @@ if (isset($_GET['token'])) {
                                                 <div class="col-md-8">
                                                     <?php
                                                     switch ($file_parts['extension']) {
-                                                        case "jpg":
-                                                    ?>
-                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                        <?php
-                                                            break;
-                                                        case "jpeg":
-                                                        ?>
-                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                        <?php
-                                                            break;
-                                                        case "png":
-                                                        ?>
-                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                        <?php
-                                                            break;
-                                                        case "bmp":
-                                                        ?>
-                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                        <?php
-                                                            break;
-                                                        case "JPG":
-                                                        ?>
-                                                            <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
-                                                        <?php
-                                                            break;
+                                                        
                                                         case "pdf":
                                                         ?>
                                                             <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/379099.png" width="120px" height="120px" /></a>
                                                     <?php
                                                             break;
+                                                        default:
+                                                        ?>
+                                                        <a href=" ./uploads/<?= $file['img'] ?>" target="_blank"><img src="./uploads/<?= $file['img'] ?>" width="120px" height="120px" /></a>
+                                                    <?php
+                                                        break;
                                                     }
 
 
@@ -353,6 +353,9 @@ if (isset($_GET['token'])) {
 
     ?>
     <script>
+    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
         $(document).ready(function() {
             $('#prim_skills').multiselect({
                 nonSelectedText: 'Select Employees',

@@ -4,38 +4,38 @@ require_once 'navbar.php';
 require_once 'left_navbar.php';
 //inserting
 if (isset($_POST['add'])) {
-    $title = $_POST['title'];
-    $link = $_POST['link'];
-    $des = $_POST['des'];
+    $title = $conn->real_escape_string($_POST['title']);
+    $link = $conn->real_escape_string($_POST['link']);
+    $des = $conn->real_escape_string($_POST['des']);
     $sql = "insert into portfolio(title,link,des) values('$title','$link','$des')";
     if ($conn->query($sql)) {
         $id = $conn->insert_id;
         if (upload_imagesInsert($conn, "portfolio_img", "p_id", 'img', $id, "projectFile")) {
-            $query = true;
+            $imageok = true;
         } else {
-            $query = false;
+            $image_not_ok = true;
         }
     } else {
-        echo $conn->error;
+        $not_ok = true;
     }
 }
 
 //editing
 if (isset($_POST['edit'])) {
     $id = $_GET['token'];
-    $title = $_POST['title'];
-    $link = $_POST['link'];
-    $des = $_POST['des'];
+    $title = $conn->real_escape_string($_POST['title']);
+    $link = $conn->real_escape_string($_POST['link']);
+    $des = $conn->real_escape_string($_POST['des']);
     $sql = "update portfolio set title='$title',link='$link',des='$des' where id='$id'";
     if ($conn->query($sql)) {
         $id = $_GET['token'];
         if (upload_imagesInsert($conn, "portfolio_img", 'p_id', "img", $id, "projectFile")) {
-            $query = true;
+            $imageok = true;
         } else {
-            $query = false;
+            $image_not_ok = true;
         }
     } else {
-        echo $conn->error;
+        $not_ok=true;
     }
 }
 //fetching
@@ -107,13 +107,23 @@ if ($res->num_rows > 0) {
             <form method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-body">
-                    <?php
-                        if (isset($query)) {
-                            if ($query) {
-                        ?>
+                        <?php
+                        if (isset($imageok)) {
+                            if ($imageok) {
+                            ?>
                                 <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
                             <?php
-                            } else {
+                            }
+                        }
+                        if (isset($image_not_ok)) {
+                            if ($image_not_ok) {
+                            ?>
+                                <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                            <?php
+                            }
+                        }
+                        if (isset($not_ok)) {
+                            if ($not_ok) {
                             ?>
                                 <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
                         <?php

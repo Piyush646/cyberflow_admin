@@ -5,65 +5,23 @@ require_once 'left_navbar.php';
 
 //inserting
 if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['sort_order']) && isset($_POST['position'])) {
-    $name =$conn->real_escape_string($_POST['name']);
-    $sort_order = $_POST['sort_order'];
-    $position = $_POST['position'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $sort_order = $conn->real_escape_string($_POST['sort_order']);
+    $position = $conn->real_escape_string($_POST['position']);
     $sql = "insert into team (name,position,sort_order) values ('$name','$position','$sort_order')";
     if ($conn->query($sql)) {
         $id = $conn->insert_id;
         if (upload_imageUpdate($conn, "team", "image", 'id', $id, "files")) {
             $addWithImage = true;
         } else {
-            $addWithImage = false;
+            $noImage = true;
         }
     } else {
-        echo $conn->error;
+        $no = true;
     }
 }
 
 
-//deleting
-// if (isset($_POST['del'])) {
-//     $id = $_POST['del'];
-//     $sql = "delete  from team where id=$id";
-//     if ($conn->query($sql)) {
-//         $query = true;
-//     } else {
-//         echo $conn->error;
-//     }
-// }
-
-//editing
-// if (isset($_POST['edit']) || isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['eposition'])) {
-//     $id=$_POST['eid'];
-//     $name = $_POST['ename'];
-//     $sort_order = $_POST['esort_order'];
-//     $position = $_POST['eposition'];
-//     $sql = "update team set name='$name',position='$position',sort_order='$sort_order' where id='$id'";
-//     if ($conn->query($sql)) {
-//         $id=$_POST['eid'];
-//         if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-//         {
-//         $query = true;
-// $id=$_POST['eid'];
-// $sql="select * from team where id='$id'";
-// $res = $conn->query($sql);
-// if($res->num_rows > 0)
-// {
-//     $selectedMember=$res->fetch_assoc();
-// }
-// else{
-//     echo $conn->error;
-// }
-//     } else {
-//         $query=false;
-//     }}
-//         else {
-//         echo $conn->error;
-//     }
-// }
-
-// print_r($selectedMember);
 
 
 //fetching
@@ -104,18 +62,29 @@ if ($res->num_rows > 0) {
 
                 <div class="card-body" id="card-body">
                     <?php
-                    if(isset($addWithImage))
-                    {
-                    if ($addWithImage) {
+                    if (isset($addWithImage)) {
+                        if ($addWithImage) {
                     ?>
-                        <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
-                    <?php
-                    } else {
-                    ?>
-                        <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
-                    <?php
+                            <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                        <?php
+                        }
                     }
-                }
+
+                    if (isset($noImage)) {
+                        if ($noImage) {
+                    ?>
+                            <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                        <?php
+                        }
+                    }
+
+                    if (isset($no)) {
+                        if ($no) {
+                        ?>
+                            <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                    <?php
+                        }
+                    }
                     ?>
                     <div>
                         <hr />
@@ -353,28 +322,22 @@ require_once 'footer.php';
                         setTimeout(function() {
                             $(".alert").hide();
                         }, 4000);
-                        
-                    }
-                }
 
-                else if(obj.msg.trim() == "image_not_ok")
-                    {
-                         $("#name" + counter).html($("#validationCustom01").val());
-                        $("#position" + counter).html($("#validationCustom02").val());
-                        $("#sort_order" + counter).html($("#validationCustom03").val());
-                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
-                        setTimeout(function() {
-                            $(".alert").hide();
-                        }, 4000);
                     }
-                    
-                    
-                  else {
+                } else if (obj.msg.trim() == "image_not_ok") {
+                    $("#name" + counter).html($("#validationCustom01").val());
+                    $("#position" + counter).html($("#validationCustom02").val());
+                    $("#sort_order" + counter).html($("#validationCustom03").val());
+                    $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
+                } else {
                     $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request was declined !!</strong></div>`);
                     setTimeout(function() {
                         $(".alert").hide();
                     }, 4000);
-                    
+
                     console.log(obj);
                 }
             },

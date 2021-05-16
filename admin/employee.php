@@ -6,51 +6,25 @@ require_once 'left_navbar.php';
 //inserting
 print_r($_POST);
 if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $contact = $_POST['contact'];
-    $password = $_POST['password'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $contact = $conn->real_escape_string($_POST['contact']);
+    $password = $conn->real_escape_string($_POST['password']);
     $sql = "insert into employee(name,email,contact,password) values ('$name','$email','$contact',MD5('$password'))";
     if ($conn->query($sql)) {
 
         $id = $conn->insert_id;
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $email = $conn->real_escape_string($_POST['email']);
+        $password = $conn->real_escape_string($_POST['password']);
         $sql = "insert into admin(email,e_id,password,status) values ('$email','$id',MD5('$password'),1)";
         if ($conn->query($sql)) {
             $query = true;
-        } else {
-            $query=false;
-        }
+        } 
     } else {
-        $query=false;
+        $query = false;
     }
 }
 
-// if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['email']) && isset($_POST['contact']) && isset(($_POST['password']))) {
-
-//     $email = $_POST['email'];
-
-//     $password = $_POST['password'];
-//     $sql = "insert into admin(email,password,status) values ('$email',MD5('$password'),1)";
-//     if ($conn->query($sql)) {
-//     }
-//     $id=$conn->insert_id;
-//     if(upload_imageUpdate($conn,"team","image",'id',$id,"files"))
-//     {
-//     $query = true;
-// } else {
-//     $query=false;
-// }}
-//     else {
-//         echo $conn->error;
-//     }
-// }
-
-
-
-
-// print_r($selectedMember);
 
 
 //fetching
@@ -89,19 +63,18 @@ if ($res->num_rows > 0) {
             </div>
             <div class="card">
                 <div class="card-body" id="card-body">
-                <?php
-                if(isset($query))
-                {
-                    if ($query) {
-                    ?>
-                        <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
                     <?php
-                    } else {
+                    if (isset($query)) {
+                        if ($query) {
                     ?>
-                        <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
+                            <div class="alert alert-success"><strong>Your request has been executed successfully !!</strong></div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="alert alert-danger"><strong>Your request has been declined!!</strong></div>
                     <?php
+                        }
                     }
-                }
                     ?>
                     <div>
                         <hr />
@@ -281,14 +254,6 @@ require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
-<!-- <script>
-    $('#fancy-file-upload').FancyFileUpload({
-        params: {
-            action: 'fileuploader'
-        },
-        maxfilesize: 1000000
-    });
-</script> -->
 
 <script>
     var counter = 0;
@@ -320,7 +285,7 @@ require_once 'footer.php';
                         setTimeout(function() {
                             $(".alert").hide();
                         }, 4000);
-                        
+
                     }
                 } else {
                     $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request has been declined !!</strong></div>`);
@@ -367,6 +332,6 @@ require_once 'footer.php';
     }
 
     setTimeout(function() {
-                        $(".alert").hide();
-                    }, 4000);
+        $(".alert").hide();
+    }, 4000);
 </script>

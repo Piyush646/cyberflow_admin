@@ -6,30 +6,6 @@ require_once 'left_navbar.php';
 
 
 
-//deleting
-
-
-if (isset($_POST['del'])) {
-    $id = $_POST['del'];
-    $sql = "delete from portfolio_img where p_id=$id";
-    if ($conn->query($sql)) {
-    } else {
-        echo $conn->error;
-    }
-}
-
-if (isset($_POST['del'])) {
-    $id = $_POST['del'];
-    $sql = "delete from portfolio where id=$id";
-    if ($conn->query($sql)) {
-        $query = true;
-    } else {
-        echo $conn->error;
-    }
-}
-
-
-
 //fetching
 $sql = "select * from portfolio";
 $res = $conn->query($sql);

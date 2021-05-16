@@ -5,55 +5,26 @@ require_once 'left_navbar.php';
 
 //inserting
 if (isset($_POST['add']) && isset($_POST['name']) && isset($_POST['sort_order']) && isset($_POST['position']) && isset($_POST['des'])) {
-    $name = $_POST['name'];
-    $sort_order = $_POST['sort_order'];
-    $position = $_POST['position'];
-    $des = $_POST['des'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $sort_order = $conn->real_escape_string($_POST['sort_order']);
+    $position = $conn->real_escape_string($_POST['position']);
+    $des = $conn->real_escape_string($_POST['des']);
     $sql = "insert into testimonials (name,position,sort_order,des) values ('$name','$position','$sort_order','$des')";
     if ($conn->query($sql)) {
         $insert_id = $conn->insert_id;
         if (upload_imageUpdate($conn, "testimonials", "img", 'id', $insert_id, "files")) {
             $addWithImage = true;
         } else {
-            $addWithImage = false;
+            $noImage = true;
         }
     } else {
-        echo $conn->error;
+        $no = true;
     }
 }
 
 
-//deleting
-if (isset($_POST['del'])) {
-    $id = $_POST['del'];
-    $sql = "delete  from testimonials where id=$id";
-    if ($conn->query($sql)) {
-        $query = true;
-    } else {
-        echo $conn->error;
-    }
-}
 
-//editing
-if (isset($_POST['edit']) || isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['eposition']) || isset(($_POST['edesc']))) {
-    $id = $_POST['eid'];
-    $name = $_POST['ename'];
-    $sort_order = $_POST['esort_order'];
-    $position = $_POST['eposition'];
-    $des = $_POST['edesc'];
-    $sql = "update testimonials set name='$name',position='$position',sort_order='$sort_order',des='$des' where id='$id'";
-    if ($conn->query($sql)) {
-        $query = true;
-        $id = $_POST['eid'];
-        if (upload_imageUpdate($conn, "testimonials", "img", 'id', $id, "files")) {
-            $query = true;
-        } else {
-            $query = false;
-        }
-    } else {
-        echo $conn->error;
-    }
-}
+
 
 
 
@@ -93,19 +64,29 @@ if ($res->num_rows > 0) {
             </div>
             <div class="card">
                 <div class="card-body" id="card-body">
-                <?php
-                if(isset($addWithImage))
-                {
-                    if ($addWithImage) {
-                    ?>
-                        <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
                     <?php
-                    } else {
+                    if (isset($addWithImage)) {
+                        if ($addWithImage) {
                     ?>
-                        <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
-                    <?php
+                            <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                        <?php
+                        }
                     }
-                }
+
+                    if (isset($noImage)) {
+                        if ($noImage) {
+                        ?>
+                            <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                        <?php
+                        }
+                    }
+                    if (isset($no)) {
+                        if ($no) {
+                        ?>
+                            <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
+                    <?php
+                        }
+                    }
                     ?>
                     <div>
                         <hr />
@@ -339,16 +320,12 @@ require_once 'js_links.php';
 require_once 'footer.php';
 
 ?>
-<!-- <script>
-    $('#fancy-file-upload').FancyFileUpload({
-        params: {
-            action: 'fileuploader'
-        },
-        maxfilesize: 1000000
-    });
-</script> -->
+
 
 <script>
+setTimeout(function() {
+        $(".alert").hide();
+    }, 4000);
     var counter = 0;
 
     function editSetValues(id, count) {
@@ -380,18 +357,26 @@ require_once 'footer.php';
             success: function(data) {
                 var obj = JSON.parse(data)
                 if (obj.msg.trim() == "ok") {
-                    {
-                        $("#name" + counter).html($("#validationCustom01").val());
-                        $("#position" + counter).html($("#validationCustom02").val());
-                        $("#sort_order" + counter).html($("#validationCustom03").val());
-                        $("#des" + counter).html(CKEDITOR.instances['edesc'].getData());
-                        $("#imagesrc" + counter).attr("src", obj.image);
-                        $("#imagehref" + counter).attr("href", obj.image);
-                        $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
-                        setTimeout(function() {
-                            $(".alert").hide();
-                        }, 4000);
-                    }
+                    $("#name" + counter).html($("#validationCustom01").val());
+                    $("#position" + counter).html($("#validationCustom02").val());
+                    $("#sort_order" + counter).html($("#validationCustom03").val());
+                    $("#des" + counter).html(CKEDITOR.instances['edesc'].getData());
+                    $("#imagesrc" + counter).attr("src", obj.image);
+                    $("#imagehref" + counter).attr("href", obj.image);
+                    $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
+                } else if (obj.msg.trim() == "image_not_ok") {
+                    $("#name" + counter).html($("#validationCustom01").val());
+                    $("#position" + counter).html($("#validationCustom02").val());
+                    $("#sort_order" + counter).html($("#validationCustom03").val());
+                    $("#des" + counter).html(CKEDITOR.instances['edesc'].getData());
+
+                    $("#card-body").prepend(`<div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>`);
+                    setTimeout(function() {
+                        $(".alert").hide();
+                    }, 4000);
                 } else {
                     $("#card-body").prepend(`<div class="alert alert-danger"><strong>Your request was declined !!</strong></div>`);
                     setTimeout(function() {

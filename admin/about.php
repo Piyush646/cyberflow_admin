@@ -14,10 +14,10 @@ if (isset($_POST['edit']) || isset($_POST['des'])) {
         if (upload_imageUpdate($conn, "about", "img", 'id', $id, "files")) {
             $editquery = true;
         } else {
-            $editquery = false;
+            $noquery = true;
         }
     } else {
-        echo $conn->error;
+        $no = true;
     }
 }
 
@@ -67,7 +67,18 @@ if ($res->num_rows > 0) {
                         ?>
                                 <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
                             <?php
-                            } else {
+                            }
+                        }
+
+                        if (isset($noquery)) {
+                            if ($noquery) {
+                            ?>
+                                <div class="alert alert-success"><strong>Your request executed successfully !!</strong></div>
+                            <?php
+                            }
+                        }
+                        if (isset($no)) {
+                            if ($no) {
                             ?>
                                 <div class="alert alert-danger"><strong>Your request was declined!!</strong></div>
                         <?php

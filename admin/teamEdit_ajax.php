@@ -5,10 +5,10 @@ require_once '../lib/core.php';
 if (isset($_POST['ename']) || isset($_POST['esort_order']) || isset($_POST['eposition'])) {
     $result = [];
     $id=$_POST['eid'];
-    $name = $_POST['ename'];
+    $name = $conn->real_escape_string($_POST['ename']);
 
-    $sort_order = $_POST['esort_order'];
-    $position = $_POST['eposition'];
+    $sort_order = $conn->real_escape_string($_POST['esort_order']);
+    $position = $conn->real_escape_string($_POST['eposition']);
     $sql = "update team set name='$name',position='$position',sort_order='$sort_order' where id='$id'";
     if ($conn->query($sql)) {
         $id=$_POST['eid'];
